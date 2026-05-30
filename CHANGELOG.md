@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The project follows preview releases until the first stable `1.0.0`.
 
-## 0.1.0-preview.1 - Unreleased
+## 0.1.0-preview.1 - 2026-05-30
 
 ### Added
 

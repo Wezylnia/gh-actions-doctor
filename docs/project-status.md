@@ -1,12 +1,12 @@
 # Project Status
 
-This public status document tracks user-facing progress from the current MVP toward `v0.1.0-preview.1` and beyond.
+This public status document tracks user-facing progress from the current MVP toward the next release.
 
 Private planning files such as `project.md`, `plan.md`, and `docs/development-notes.md` are intentionally local-only and ignored by Git.
 
 ## Current Version Target
 
-Target: `0.1.0-preview.1`
+Current preview: `0.1.0-preview.1`
 
 Goal: make the current tool installable, documented, and safe to share publicly.
 
@@ -35,12 +35,15 @@ Goal: make the current tool installable, documented, and safe to share publicly.
   - `mutable-action-reference`
   - `action-not-sha-pinned`
   - `risky-pull-request-target`
+- CI is green for the preview preparation commit.
+- README CI badge has been added.
+- GitHub release `v0.1.0-preview.1` is prepared from the current release notes.
 
 ## Remaining For Preview
 
-- Add or confirm the README CI badge after GitHub Actions is green.
-- Tag `v0.1.0-preview.1`.
-- Publish the GitHub preview release.
+No required repository tasks remain for `v0.1.0-preview.1`.
+
+NuGet publishing is intentionally separate and can be done after the GitHub preview release is reviewed.
 
 ## Next After Preview
 

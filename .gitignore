@@ -6,3 +6,5 @@ TestResults/
 *.user
 *.suo
 project.md
+plan.md
+docs/development-notes.md

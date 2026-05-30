@@ -3,6 +3,8 @@ obj/
 TestResults/
 .vs/
 .idea/
+.tmp/
+artifacts/
 *.user
 *.suo
 project.md

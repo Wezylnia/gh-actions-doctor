@@ -1,5 +1,7 @@
 # gh-actions-doctor
 
+[![CI](https://github.com/Wezylnia/gh-actions-doctor/actions/workflows/ci.yml/badge.svg)](https://github.com/Wezylnia/gh-actions-doctor/actions/workflows/ci.yml)
+
 `gh-actions-doctor` is a lightweight .NET CLI that scans GitHub Actions workflow files and reports common security, reliability, performance, maintainability, and cost issues.
 
 It is built for maintainers who want quick CI/CD hygiene checks without adopting a full security platform.
@@ -21,13 +23,31 @@ GitHub Actions workflows are often copied from project to project and then left 
 
 ## Status
 
-This repository contains the first working MVP. It can scan workflow files, report findings in text or JSON, and return CI-friendly exit codes.
+This repository contains the first working preview. It can scan workflow files, report findings in text or JSON, and return CI-friendly exit codes.
 
 ## Requirements
 
 - .NET SDK 10
 
 This project currently targets `net10.0`.
+
+## Install
+
+The first public package is planned as `0.1.0-preview.1`.
+
+When published to NuGet:
+
+```bash
+dotnet tool install --global gh-actions-doctor --version 0.1.0-preview.1
+```
+
+From a locally packed package:
+
+```bash
+dotnet pack src/GhActionsDoctor.Cli --configuration Release
+dotnet tool install --tool-path .tmp/tools gh-actions-doctor --version 0.1.0-preview.1 --add-source src/GhActionsDoctor.Cli/bin/Release
+.tmp/tools/gh-actions-doctor scan
+```
 
 ## Quick Start
 
@@ -67,6 +87,12 @@ Skip selected rules:
 dotnet run --project src/GhActionsDoctor.Cli -- scan --exclude action-not-sha-pinned
 ```
 
+Strict mode promotes selected security findings:
+
+```bash
+dotnet run --project src/GhActionsDoctor.Cli -- scan --strict
+```
+
 ## Example Output
 
 ```txt
@@ -92,11 +118,11 @@ Summary:
 
 | Rule | Severity | Category | Description |
 | --- | --- | --- | --- |
-| `missing-permissions` | warning | security | Reports workflows without a top-level `permissions` block. |
-| `mutable-action-reference` | warning | security | Reports actions using mutable refs such as `@main`, `@master`, or `@latest`. |
-| `action-not-sha-pinned` | info | security | Reports third-party actions that are not pinned to a full commit SHA. |
-| `risky-pull-request-target` | warning/error | security | Reports `pull_request_target`, with errors for high-risk patterns. |
-| `missing-timeout` | warning | reliability | Reports jobs without `timeout-minutes`. |
+| [`missing-permissions`](docs/rules/missing-permissions.md) | warning | security | Reports workflows without a top-level `permissions` block. |
+| [`mutable-action-reference`](docs/rules/mutable-action-reference.md) | warning | security | Reports actions using mutable refs such as `@main`, `@master`, or `@latest`. |
+| [`action-not-sha-pinned`](docs/rules/action-not-sha-pinned.md) | info | security | Reports third-party actions that are not pinned to a full commit SHA. |
+| [`risky-pull-request-target`](docs/rules/risky-pull-request-target.md) | warning/error | security | Reports `pull_request_target`, with errors for high-risk patterns. |
+| [`missing-timeout`](docs/rules/missing-timeout.md) | warning | reliability | Reports jobs without `timeout-minutes`. |
 | `missing-concurrency` | info | cost | Reports workflows that are likely to benefit from `concurrency`. |
 | `setup-node-cache-missing` | info | performance | Reports `actions/setup-node` usage without dependency caching. |
 | `broad-push-trigger` | info | cost | Reports workflows that run on every push without branch, tag, or path filters. |
@@ -117,6 +143,25 @@ Options:
   --exclude <rule-id,...>       Skip selected rules.
   --strict                      Promote selected security findings.
 ```
+
+## JSON Output
+
+Use JSON output for automation:
+
+```bash
+dotnet run --project src/GhActionsDoctor.Cli -- scan --format json
+```
+
+The JSON payload includes:
+
+- summary counts
+- finding file path
+- severity
+- rule ID
+- category
+- message
+- suggestion
+- source line and column when available
 
 ## Development
 
@@ -139,17 +184,17 @@ Pack as a local .NET tool:
 
 ```bash
 dotnet pack src/GhActionsDoctor.Cli --configuration Release
-dotnet tool install --global --add-source src/GhActionsDoctor.Cli/bin/Release GhActionsDoctor.Cli
-gh-actions-doctor scan
+dotnet tool install --tool-path .tmp/tools gh-actions-doctor --version 0.1.0-preview.1 --add-source src/GhActionsDoctor.Cli/bin/Release
+.tmp/tools/gh-actions-doctor scan
 ```
+
+## Contributing
+
+Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Roadmap
 
-- SARIF output for GitHub code scanning
-- configuration file support
-- GitHub Actions annotation output
-- safe autofix support
-- official GitHub Action wrapper
+See [docs/roadmap.md](docs/roadmap.md) for the release roadmap and [docs/project-status.md](docs/project-status.md) for current preview readiness.
 
 ## License
 

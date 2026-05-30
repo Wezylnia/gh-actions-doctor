@@ -1,0 +1,14 @@
+name: CI
+
+on:
+  push:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: acme/example-action@main
+      - run: npm test

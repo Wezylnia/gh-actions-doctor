@@ -20,7 +20,8 @@ public sealed class MissingPermissionsRule : IWorkflowRule
                 workflow,
                 "Workflow does not define a top-level permissions block.",
                 "Add a top-level permissions block and grant only the permissions required by the workflow.",
-                context.Options.Strict ? RuleSeverity.Error : null))
+                context.Options.Strict ? RuleSeverity.Error : null,
+                workflow.Root))
             .ToArray();
     }
 }

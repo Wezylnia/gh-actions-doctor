@@ -17,15 +17,20 @@ internal static partial class RuleHelpers
         WorkflowFile workflow,
         string message,
         string suggestion,
-        RuleSeverity? severity = null)
+        RuleSeverity? severity = null,
+        YamlNode? locationNode = null)
     {
+        var (line, column) = locationNode.GetLocation();
+
         return new Finding(
             rule.Id,
             workflow.FilePath,
             severity ?? rule.DefaultSeverity,
             rule.Category,
             message,
-            suggestion);
+            suggestion,
+            line,
+            column);
     }
 
     public static bool HasTrigger(YamlMappingNode root, string triggerName)
@@ -44,9 +49,7 @@ internal static partial class RuleHelpers
 
     public static IEnumerable<string> UsesValues(YamlMappingNode root)
     {
-        return root.GetSteps()
-            .Select(step => step.GetScalarValue("uses"))
-            .Where(value => !string.IsNullOrWhiteSpace(value))!;
+        return root.GetUsesSteps().Select(step => step.Uses);
     }
 
     public static bool IsLocalOrDockerAction(string uses)

@@ -23,6 +23,8 @@ public sealed class RiskyPullRequestTargetRule : IWorkflowRule
                 continue;
             }
 
+            var triggerNode = GetPullRequestTargetLocationNode(root);
+
             var checksOutCode = RuleHelpers.UsesValues(root)
                 .Any(uses => uses.StartsWith("actions/checkout@", StringComparison.OrdinalIgnoreCase));
             var runsScripts = root.GetSteps().Any(step => step.HasChild("run"));
@@ -38,9 +40,24 @@ public sealed class RiskyPullRequestTargetRule : IWorkflowRule
                 dangerous
                     ? "Avoid checking out or running pull request code with pull_request_target, especially when secrets or write permissions are available."
                     : "Review whether pull_request is sufficient and keep permissions minimal.",
-                dangerous ? RuleSeverity.Error : RuleSeverity.Warning));
+                dangerous ? RuleSeverity.Error : RuleSeverity.Warning,
+                triggerNode));
         }
 
         return findings;
+    }
+
+    private static YamlDotNet.RepresentationModel.YamlNode? GetPullRequestTargetLocationNode(YamlDotNet.RepresentationModel.YamlMappingNode root)
+    {
+        var onEntry = root.GetEntry("on");
+        return onEntry?.Value switch
+        {
+            YamlDotNet.RepresentationModel.YamlMappingNode mapping => mapping.GetEntry("pull_request_target")?.Key,
+            YamlDotNet.RepresentationModel.YamlSequenceNode sequence => sequence.Children
+                .OfType<YamlDotNet.RepresentationModel.YamlScalarNode>()
+                .FirstOrDefault(node => string.Equals(node.Value, "pull_request_target", StringComparison.OrdinalIgnoreCase)),
+            YamlDotNet.RepresentationModel.YamlScalarNode scalar => scalar,
+            _ => onEntry?.Key
+        };
     }
 }

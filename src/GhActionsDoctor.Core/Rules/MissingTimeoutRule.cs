@@ -17,7 +17,7 @@ public sealed class MissingTimeoutRule : IWorkflowRule
 
         foreach (var workflow in context.ValidWorkflows())
         {
-            foreach (var (jobName, job) in workflow.Root!.GetNamedJobMappings())
+            foreach (var (jobName, job, jobKey) in workflow.Root!.GetNamedJobMappingEntries())
             {
                 if (!job.HasChild("timeout-minutes"))
                 {
@@ -25,7 +25,8 @@ public sealed class MissingTimeoutRule : IWorkflowRule
                         this,
                         workflow,
                         $"Job '{jobName}' does not define timeout-minutes.",
-                        "Add a timeout-minutes value that reflects the expected maximum runtime for this job."));
+                        "Add a timeout-minutes value that reflects the expected maximum runtime for this job.",
+                        locationNode: jobKey));
                 }
             }
         }

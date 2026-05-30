@@ -23,7 +23,8 @@ public sealed class MissingConcurrencyRuleTests : IDisposable
               - run: dotnet test
         """);
 
-        Assert.Single(findings);
+        var finding = Assert.Single(findings);
+        Assert.Equal(1, finding.Line);
     }
 
     [Fact]
@@ -40,7 +41,8 @@ public sealed class MissingConcurrencyRuleTests : IDisposable
               - run: dotnet nuget push
         """);
 
-        Assert.Single(findings);
+        var finding = Assert.Single(findings);
+        Assert.Equal(1, finding.Line);
     }
 
     [Fact]

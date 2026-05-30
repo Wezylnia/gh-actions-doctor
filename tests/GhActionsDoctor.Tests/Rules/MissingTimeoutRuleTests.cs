@@ -28,8 +28,8 @@ public sealed class MissingTimeoutRuleTests : IDisposable
 
         Assert.Equal(2, findings.Count);
         Assert.All(findings, finding => Assert.Equal(RuleSeverity.Warning, finding.Severity));
-        Assert.Contains(findings, finding => finding.Message.Contains("'build'", StringComparison.Ordinal));
-        Assert.Contains(findings, finding => finding.Message.Contains("'test'", StringComparison.Ordinal));
+        Assert.Contains(findings, finding => finding.Message.Contains("'build'", StringComparison.Ordinal) && finding.Line == 5);
+        Assert.Contains(findings, finding => finding.Message.Contains("'test'", StringComparison.Ordinal) && finding.Line == 9);
     }
 
     [Fact]

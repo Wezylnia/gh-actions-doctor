@@ -17,6 +17,7 @@ public sealed class ActionNotShaPinnedRuleTests : IDisposable
         Assert.Equal("action-not-sha-pinned", finding.RuleId);
         Assert.Equal(RuleSeverity.Info, finding.Severity);
         Assert.Equal(RuleCategory.Security, finding.Category);
+        Assert.Equal(8, finding.Line);
     }
 
     [Fact]

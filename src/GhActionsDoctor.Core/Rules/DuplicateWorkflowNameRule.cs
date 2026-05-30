@@ -1,4 +1,5 @@
 using GhActionsDoctor.Core.Models;
+using GhActionsDoctor.Core.Yaml;
 
 namespace GhActionsDoctor.Core.Rules;
 
@@ -20,7 +21,8 @@ public sealed class DuplicateWorkflowNameRule : IWorkflowRule
                 this,
                 workflow,
                 $"Workflow name '{group.Key}' is used by multiple workflow files.",
-                "Use unique workflow names so GitHub UI entries and status checks are easier to understand.")))
+                "Use unique workflow names so GitHub UI entries and status checks are easier to understand.",
+                locationNode: workflow.Root!.GetEntry("name")?.Key)))
             .ToArray();
     }
 }

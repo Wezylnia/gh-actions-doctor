@@ -22,6 +22,7 @@ public sealed class MutableActionReferenceRuleTests : IDisposable
         var finding = Assert.Single(findings);
         Assert.Equal("mutable-action-reference", finding.RuleId);
         Assert.Equal(RuleSeverity.Warning, finding.Severity);
+        Assert.Equal(8, finding.Line);
     }
 
     [Theory]

@@ -20,6 +20,7 @@ public sealed class DuplicateWorkflowNameRuleTests : IDisposable
 
         Assert.Equal(2, findings.Count);
         Assert.All(findings, finding => Assert.Equal("duplicate-workflow-name", finding.RuleId));
+        Assert.All(findings, finding => Assert.Equal(1, finding.Line));
     }
 
     [Fact]

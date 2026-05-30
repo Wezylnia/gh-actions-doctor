@@ -29,31 +29,41 @@ public sealed class BroadPushTriggerRule : IWorkflowRule
         foreach (var workflow in context.ValidWorkflows())
         {
             var onNode = workflow.Root!.GetChild("on");
-            if (IsBroadPush(onNode))
+            if (IsBroadPush(onNode, out var locationNode))
             {
                 findings.Add(RuleHelpers.Finding(
                     this,
                     workflow,
                     "Workflow runs on every push without branch, tag, or path filters.",
-                    "Add branch, tag, or path filters if this workflow does not need to run for every push."));
+                    "Add branch, tag, or path filters if this workflow does not need to run for every push.",
+                    locationNode: locationNode));
             }
         }
 
         return findings;
     }
 
-    private static bool IsBroadPush(YamlNode? onNode)
+    private static bool IsBroadPush(YamlNode? onNode, out YamlNode? locationNode)
     {
-        return onNode switch
+        locationNode = null;
+
+        switch (onNode)
         {
-            YamlScalarNode scalar => string.Equals(scalar.Value, "push", StringComparison.OrdinalIgnoreCase),
-            YamlSequenceNode sequence => sequence.Children
-                .OfType<YamlScalarNode>()
-                .Any(node => string.Equals(node.Value, "push", StringComparison.OrdinalIgnoreCase)),
-            YamlMappingNode mapping when mapping.GetChild("push") is { } push =>
-                push.IsNullLike()
-                || push is YamlMappingNode pushMapping && !FilterKeys.Any(pushMapping.HasChild),
-            _ => false
-        };
+            case YamlScalarNode scalar:
+                locationNode = scalar;
+                return string.Equals(scalar.Value, "push", StringComparison.OrdinalIgnoreCase);
+            case YamlSequenceNode sequence:
+                var pushNode = sequence.Children
+                    .OfType<YamlScalarNode>()
+                    .FirstOrDefault(node => string.Equals(node.Value, "push", StringComparison.OrdinalIgnoreCase));
+                locationNode = pushNode;
+                return pushNode is not null;
+            case YamlMappingNode mapping when mapping.GetEntry("push") is { } pushEntry:
+                locationNode = pushEntry.Key;
+                return pushEntry.Value.IsNullLike()
+                    || pushEntry.Value is YamlMappingNode pushMapping && !FilterKeys.Any(pushMapping.HasChild);
+            default:
+                return false;
+        }
     }
 }

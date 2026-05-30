@@ -36,7 +36,8 @@ public sealed class MissingConcurrencyRule : IWorkflowRule
                     this,
                     workflow,
                     "Workflow does not define concurrency.",
-                    "Consider adding concurrency with a group based on github.workflow and github.ref, and cancel-in-progress for CI workflows."));
+                    "Consider adding concurrency with a group based on github.workflow and github.ref, and cancel-in-progress for CI workflows.",
+                    locationNode: root));
             }
         }
 

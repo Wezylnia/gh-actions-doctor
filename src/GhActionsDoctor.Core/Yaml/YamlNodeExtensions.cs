@@ -4,18 +4,23 @@ namespace GhActionsDoctor.Core.Yaml;
 
 internal static class YamlNodeExtensions
 {
-    public static YamlNode? GetChild(this YamlMappingNode mapping, string key)
+    public static YamlMappingEntry? GetEntry(this YamlMappingNode mapping, string key)
     {
         foreach (var child in mapping.Children)
         {
             if (child.Key is YamlScalarNode scalar
                 && string.Equals(scalar.Value, key, StringComparison.OrdinalIgnoreCase))
             {
-                return child.Value;
+                return new YamlMappingEntry(child.Key, child.Value);
             }
         }
 
         return null;
+    }
+
+    public static YamlNode? GetChild(this YamlMappingNode mapping, string key)
+    {
+        return mapping.GetEntry(key)?.Value;
     }
 
     public static bool HasChild(this YamlMappingNode mapping, string key)
@@ -62,6 +67,22 @@ internal static class YamlNodeExtensions
         }
     }
 
+    public static IEnumerable<(string JobName, YamlMappingNode Job, YamlNode JobKey)> GetNamedJobMappingEntries(this YamlMappingNode root)
+    {
+        if (root.GetMapping("jobs") is not { } jobs)
+        {
+            yield break;
+        }
+
+        foreach (var child in jobs.Children)
+        {
+            if (child.Key is YamlScalarNode key && child.Value is YamlMappingNode job)
+            {
+                yield return (key.Value ?? "<unnamed>", job, child.Key);
+            }
+        }
+    }
+
     public static IEnumerable<YamlMappingNode> GetSteps(this YamlMappingNode root)
     {
         foreach (var job in root.GetJobMappings())
@@ -76,6 +97,28 @@ internal static class YamlNodeExtensions
                 yield return step;
             }
         }
+    }
+
+    public static IEnumerable<(YamlMappingNode Step, string Uses, YamlNode UsesNode)> GetUsesSteps(this YamlMappingNode root)
+    {
+        foreach (var step in root.GetSteps())
+        {
+            var usesEntry = step.GetEntry("uses");
+            if (usesEntry?.Value is YamlScalarNode usesNode && !string.IsNullOrWhiteSpace(usesNode.Value))
+            {
+                yield return (step, usesNode.Value, usesNode);
+            }
+        }
+    }
+
+    public static (int? Line, int? Column) GetLocation(this YamlNode? node)
+    {
+        if (node is null || node.Start.Line <= 0)
+        {
+            return (null, null);
+        }
+
+        return ((int)node.Start.Line, node.Start.Column > 0 ? (int)node.Start.Column : null);
     }
 
     public static bool IsNullLike(this YamlNode node)

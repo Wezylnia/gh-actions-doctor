@@ -31,7 +31,8 @@ public sealed class BroadPushTriggerRuleTests : IDisposable
               - run: dotnet test
         """);
 
-        Assert.Single(findings);
+        var finding = Assert.Single(findings);
+        Assert.NotNull(finding.Line);
     }
 
     [Theory]

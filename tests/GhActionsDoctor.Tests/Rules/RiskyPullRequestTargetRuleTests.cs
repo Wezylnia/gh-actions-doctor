@@ -27,6 +27,7 @@ public sealed class RiskyPullRequestTargetRuleTests : IDisposable
 
         var finding = Assert.Single(findings);
         Assert.Equal(RuleSeverity.Warning, finding.Severity);
+        Assert.Equal(3, finding.Line);
     }
 
     [Fact]
@@ -45,6 +46,7 @@ public sealed class RiskyPullRequestTargetRuleTests : IDisposable
 
         var finding = Assert.Single(findings);
         Assert.Equal(RuleSeverity.Error, finding.Severity);
+        Assert.Equal(3, finding.Line);
     }
 
     [Fact]
@@ -65,6 +67,7 @@ public sealed class RiskyPullRequestTargetRuleTests : IDisposable
 
         var finding = Assert.Single(findings);
         Assert.Equal(RuleSeverity.Error, finding.Severity);
+        Assert.Equal(3, finding.Line);
     }
 
     [Fact]

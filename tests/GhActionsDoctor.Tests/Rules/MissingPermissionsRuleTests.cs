@@ -26,6 +26,7 @@ public sealed class MissingPermissionsRuleTests : IDisposable
         Assert.Equal("missing-permissions", finding.RuleId);
         Assert.Equal(RuleSeverity.Warning, finding.Severity);
         Assert.Equal(RuleCategory.Security, finding.Category);
+        Assert.Equal(1, finding.Line);
     }
 
     [Fact]

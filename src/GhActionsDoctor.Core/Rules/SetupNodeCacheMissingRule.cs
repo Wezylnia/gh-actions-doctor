@@ -17,10 +17,9 @@ public sealed class SetupNodeCacheMissingRule : IWorkflowRule
 
         foreach (var workflow in context.ValidWorkflows())
         {
-            foreach (var step in workflow.Root!.GetSteps())
+            foreach (var (step, uses, usesNode) in workflow.Root!.GetUsesSteps())
             {
-                var uses = step.GetScalarValue("uses");
-                if (uses is null || !uses.StartsWith("actions/setup-node@", StringComparison.OrdinalIgnoreCase))
+                if (!uses.StartsWith("actions/setup-node@", StringComparison.OrdinalIgnoreCase))
                 {
                     continue;
                 }
@@ -31,7 +30,8 @@ public sealed class SetupNodeCacheMissingRule : IWorkflowRule
                         this,
                         workflow,
                         "actions/setup-node is used without dependency caching.",
-                        "Add a cache value such as npm, yarn, or pnpm when the workflow installs Node.js dependencies."));
+                        "Add a cache value such as npm, yarn, or pnpm when the workflow installs Node.js dependencies.",
+                        locationNode: usesNode));
                 }
             }
         }

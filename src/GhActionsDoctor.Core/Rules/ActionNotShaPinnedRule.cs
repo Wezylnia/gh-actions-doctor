@@ -1,4 +1,5 @@
 using GhActionsDoctor.Core.Models;
+using GhActionsDoctor.Core.Yaml;
 
 namespace GhActionsDoctor.Core.Rules;
 
@@ -16,7 +17,7 @@ public sealed class ActionNotShaPinnedRule : IWorkflowRule
 
         foreach (var workflow in context.ValidWorkflows())
         {
-            foreach (var uses in RuleHelpers.UsesValues(workflow.Root!))
+            foreach (var (_, uses, usesNode) in workflow.Root!.GetUsesSteps())
             {
                 if (RuleHelpers.IsLocalOrDockerAction(uses) || RuleHelpers.IsFirstPartyGitHubAction(uses))
                 {
@@ -31,7 +32,8 @@ public sealed class ActionNotShaPinnedRule : IWorkflowRule
                         workflow,
                         $"Third-party action '{uses}' is not pinned to a full commit SHA.",
                         "Pin third-party actions to a full 40-character commit SHA when you need stricter supply-chain security.",
-                        context.Options.Strict ? RuleSeverity.Warning : null));
+                        context.Options.Strict ? RuleSeverity.Warning : null,
+                        usesNode));
                 }
             }
         }

@@ -1,4 +1,5 @@
 using GhActionsDoctor.Core.Models;
+using GhActionsDoctor.Core.Yaml;
 
 namespace GhActionsDoctor.Core.Rules;
 
@@ -26,7 +27,7 @@ public sealed class MutableActionReferenceRule : IWorkflowRule
 
         foreach (var workflow in context.ValidWorkflows())
         {
-            foreach (var uses in RuleHelpers.UsesValues(workflow.Root!))
+            foreach (var (_, uses, usesNode) in workflow.Root!.GetUsesSteps())
             {
                 if (RuleHelpers.IsLocalOrDockerAction(uses))
                 {
@@ -41,7 +42,8 @@ public sealed class MutableActionReferenceRule : IWorkflowRule
                         workflow,
                         $"Action '{uses}' uses a mutable reference.",
                         "Use a version tag or, preferably for stricter security, pin the action to a full commit SHA.",
-                        context.Options.Strict ? RuleSeverity.Error : null));
+                        context.Options.Strict ? RuleSeverity.Error : null,
+                        usesNode));
                 }
             }
         }

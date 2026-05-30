@@ -23,7 +23,8 @@ public sealed class SetupNodeCacheMissingRuleTests : IDisposable
                   node-version: 20
         """);
 
-        Assert.Single(findings);
+        var finding = Assert.Single(findings);
+        Assert.Equal(8, finding.Line);
     }
 
     [Theory]

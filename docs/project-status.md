@@ -6,7 +6,7 @@ Private planning files such as `project.md`, `plan.md`, and `docs/development-no
 
 ## Current Version Target
 
-Current preview: `0.1.0-preview.1`
+Current preview: [`0.1.0-preview.1`](https://github.com/Wezylnia/gh-actions-doctor/releases/tag/v0.1.0-preview.1)
 
 Goal: make the current tool installable, documented, and safe to share publicly.
 
@@ -37,7 +37,8 @@ Goal: make the current tool installable, documented, and safe to share publicly.
   - `risky-pull-request-target`
 - CI is green for the preview preparation commit.
 - README CI badge has been added.
-- GitHub release `v0.1.0-preview.1` is prepared from the current release notes.
+- GitHub release `v0.1.0-preview.1` is published.
+- The generated `.nupkg` is attached to the GitHub release.
 
 ## Remaining For Preview
 

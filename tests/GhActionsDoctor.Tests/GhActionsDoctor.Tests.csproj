@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\GhActionsDoctor.Cli\GhActionsDoctor.Cli.csproj" />
     <ProjectReference Include="..\..\src\GhActionsDoctor.Core\GhActionsDoctor.Core.csproj" />
   </ItemGroup>
 

@@ -1,0 +1,58 @@
+name: Rule request
+description: Suggest a new workflow scanning rule
+title: "rule: "
+labels: ["enhancement", "area:rules"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a new rule. Please describe what the rule should detect and why it matters.
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem should this rule detect?
+      description: Describe the GitHub Actions workflow pattern that should be flagged.
+      placeholder: |
+        Example: workflows that use `actions/checkout` with `persist-credentials: true` by default.
+    validations:
+      required: true
+  - type: textarea
+    id: example
+    attributes:
+      label: Example workflow snippet
+      description: Paste a short workflow YAML that should trigger this rule.
+      render: yaml
+    validations:
+      required: true
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Suggested fix message
+      description: What should the tool suggest as a fix?
+      placeholder: "Set `persist-credentials: false` unless the credentials are needed for subsequent steps."
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      options:
+        - security
+        - reliability
+        - performance
+        - cost
+        - maintainability
+        - correctness
+    validations:
+      required: true
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Suggested severity
+      options:
+        - error
+        - warning
+        - info
+  - type: textarea
+    id: references
+    attributes:
+      label: References
+      description: Links to GitHub docs, blog posts, or security advisories that support this rule.

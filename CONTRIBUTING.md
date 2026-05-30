@@ -36,6 +36,8 @@ dotnet run --project src/GhActionsDoctor.Cli -- scan --path samples/bad --fail-o
 
 ## Adding a Rule
 
+See [docs/contributing/adding-a-rule.md](docs/contributing/adding-a-rule.md) for a step-by-step guide.
+
 A typical rule contribution should include:
 
 - a new rule class under `src/GhActionsDoctor.Core/Rules`

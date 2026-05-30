@@ -1,10 +1,18 @@
 # gh-actions-doctor
 
 [![CI](https://github.com/Wezylnia/gh-actions-doctor/actions/workflows/ci.yml/badge.svg)](https://github.com/Wezylnia/gh-actions-doctor/actions/workflows/ci.yml)
+[![GitHub release](https://img.shields.io/github/v/release/Wezylnia/gh-actions-doctor?include_prereleases)](https://github.com/Wezylnia/gh-actions-doctor/releases)
+[![License](https://img.shields.io/github/license/Wezylnia/gh-actions-doctor)](LICENSE)
 
-`gh-actions-doctor` is a lightweight .NET CLI that scans GitHub Actions workflow files and reports common security, reliability, performance, maintainability, and cost issues.
+A lightweight .NET CLI that scans GitHub Actions workflows for security, reliability, performance, and cost issues.
 
-It is built for maintainers who want quick CI/CD hygiene checks without adopting a full security platform.
+## Try it in 30 seconds
+
+```bash
+git clone https://github.com/Wezylnia/gh-actions-doctor.git
+cd gh-actions-doctor
+dotnet run --project src/GhActionsDoctor.Cli -- scan --path samples/bad --fail-on none
+```
 
 ## Why It Exists
 
@@ -163,6 +171,19 @@ The JSON payload includes:
 - suggestion
 - source line and column when available
 
+## GitHub Actions Usage
+
+Add `gh-actions-doctor` to your CI workflow to catch issues in every PR:
+
+```yaml
+- uses: actions/setup-dotnet@v5
+  with:
+    dotnet-version: 10.0.x
+- run: dotnet run --project src/GhActionsDoctor.Cli -- scan --fail-on warning
+```
+
+For a full example, see the [CI workflow](.github/workflows/ci.yml) that scans this repository.
+
 ## Development
 
 Restore, build, and test:
@@ -190,7 +211,9 @@ dotnet tool install --tool-path .tmp/tools gh-actions-doctor --version 0.1.0-pre
 
 ## Contributing
 
-Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md).
+Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/contributing/adding-a-rule.md](docs/contributing/adding-a-rule.md) for guidance.
+
+[Good first issues](https://github.com/Wezylnia/gh-actions-doctor/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22good%20first%20issue%22) · [Help wanted](https://github.com/Wezylnia/gh-actions-doctor/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22help%20wanted%22)
 
 ## Roadmap
 

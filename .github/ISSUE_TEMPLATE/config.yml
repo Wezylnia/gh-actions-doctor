@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Discussions
+    url: https://github.com/Wezylnia/gh-actions-doctor/discussions
+    about: Ask questions, share ideas, or give feedback in Discussions.
+  - name: 📖 Rule docs
+    url: https://github.com/Wezylnia/gh-actions-doctor/tree/main/docs/rules
+    about: Read the rule documentation before opening a rule-related issue.

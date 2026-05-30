@@ -1,0 +1,56 @@
+name: Bug report
+description: Report a bug in gh-actions-doctor
+title: "bug: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug.
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Which version of gh-actions-doctor are you using?
+      placeholder: "0.1.0-preview.1"
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Describe the bug and what you expected to happen.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Provide the exact command and workflow file that triggers the issue.
+      placeholder: |
+        1. Run `gh-actions-doctor scan --path ...`
+        2. See error
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: Output
+      description: Paste the CLI output or error message.
+      render: text
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options:
+        - Windows
+        - macOS
+        - Linux
+    validations:
+      required: true
+  - type: input
+    id: dotnet-version
+    attributes:
+      label: .NET version
+      description: Run `dotnet --version` and paste the result.
+      placeholder: "10.0.0"

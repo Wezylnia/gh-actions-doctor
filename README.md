@@ -132,7 +132,7 @@ Summary:
 | [`risky-pull-request-target`](docs/rules/risky-pull-request-target.md) | warning/error | security | Reports `pull_request_target`, with errors for high-risk patterns. |
 | [`missing-timeout`](docs/rules/missing-timeout.md) | warning | reliability | Reports jobs without `timeout-minutes`. |
 | `missing-concurrency` | info | cost | Reports workflows that are likely to benefit from `concurrency`. |
-| `setup-node-cache-missing` | info | performance | Reports `actions/setup-node` usage without dependency caching. |
+| [`setup-node-cache-missing`](docs/rules/setup-node-cache-missing.md) | info | performance | Reports `actions/setup-node` usage without dependency caching. |
 | `broad-push-trigger` | info | cost | Reports workflows that run on every push without branch, tag, or path filters. |
 | `duplicate-workflow-name` | info | maintainability | Reports repeated workflow names across files. |
 | `yaml-parse-error` | error | correctness | Reports invalid workflow YAML without crashing the scan. |

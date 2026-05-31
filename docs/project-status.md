@@ -40,6 +40,21 @@ Goal: make the current tool installable, documented, and safe to share publicly.
 - GitHub release `v0.1.0-preview.1` is published.
 - The generated `.nupkg` is attached to the GitHub release.
 
+## Repository Protection
+
+The repository is configured so public contribution should flow through pull requests:
+
+- `main` is protected.
+- The `build` GitHub Actions check is required before merge.
+- Pull requests require at least one approving review.
+- Code-owner review is required.
+- `CODEOWNERS` assigns all files to `@Wezylnia`.
+- Stale approvals are dismissed after new commits are pushed.
+- Conversation resolution is required before merge.
+- Force pushes and branch deletion are disabled.
+- Administrators are not locked out, so the maintainer keeps emergency bypass ability.
+- Squash merge is the intended merge strategy.
+
 ## Remaining For Preview
 
 No required repository tasks remain for `v0.1.0-preview.1`.

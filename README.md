@@ -192,6 +192,8 @@ Add `gh-actions-doctor` to your CI workflow to catch issues in every PR:
 
 For a full example, see the [CI workflow](.github/workflows/ci.yml) that scans this repository.
 
+Before merging workflow changes, run through the [Workflow Hardening Checklist](docs/workflow-hardening-checklist.md) for a concise review of permissions, pinning, timeouts, triggers, and secrets.
+
 ## Development
 
 Restore, build, and test:

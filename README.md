@@ -237,7 +237,7 @@ See [docs/roadmap.md](docs/roadmap.md) for the release roadmap, [docs/project-st
 
 ## Repository Governance
 
-The public repository is set up for small, reviewable contributions. `main` is protected, CI is required, and `CODEOWNERS` routes review to the maintainer. Issues are labeled by area and contribution type so new contributors can find bounded work.
+The public repository is set up for small, reviewable contributions. `main` is protected, CI is required, and `CODEOWNERS` routes review to the maintainer. Stale-review dismissal, last-push approval, conversation resolution, disabled force pushes/deletions, admin emergency bypass, and GitHub Copilot automatic PR review are configured for pull requests targeting `main`.
 
 ## License
 

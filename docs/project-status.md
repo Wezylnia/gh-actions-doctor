@@ -54,6 +54,8 @@ The repository is configured so public contribution should flow through pull req
 - Force pushes and branch deletion are disabled.
 - Administrators are not locked out, so the maintainer keeps emergency bypass ability.
 - Squash merge is the intended merge strategy.
+- The most recent push must be approved by someone other than the pusher.
+- GitHub Copilot is configured for automatic pull request review on pushes to PRs targeting `main`.
 
 ## Remaining For Preview
 

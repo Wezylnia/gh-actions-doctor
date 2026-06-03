@@ -1,0 +1,29 @@
+name: Contributor task
+description: Propose a small, well-bounded task for contributors.
+title: "task: "
+labels: ["help wanted"]
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal
+      description: What should be improved?
+    validations:
+      required: true
+  - type: textarea
+    id: implementation
+    attributes:
+      label: Suggested implementation
+      description: Mention files, tests, docs, and rule IDs where possible.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      placeholder: |
+        - Add or update focused tests.
+        - Update docs if behavior changes.
+        - `dotnet test GhActionsDoctor.sln` passes.
+    validations:
+      required: true

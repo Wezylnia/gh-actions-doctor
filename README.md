@@ -6,7 +6,7 @@
 
 A lightweight .NET CLI that scans GitHub Actions workflows for security, reliability, performance, and cost issues.
 
-## Try it in 30 seconds
+## Try It In 30 Seconds
 
 ```bash
 git clone https://github.com/Wezylnia/gh-actions-doctor.git
@@ -18,20 +18,26 @@ dotnet run --project src/GhActionsDoctor.Cli -- scan --path samples/bad --fail-o
 
 GitHub Actions workflows are often copied from project to project and then left alone for months. They may still work, but small problems pile up:
 
-- overly broad `GITHUB_TOKEN` permissions
-- actions referenced by mutable branches like `@main`
-- third-party actions not pinned to commit SHAs
-- risky `pull_request_target` usage
-- jobs without timeouts
-- workflows without concurrency controls
-- dependency installs without caching
-- broad triggers that burn CI minutes unnecessarily
+- overly broad `GITHUB_TOKEN` permissions,
+- actions referenced by mutable branches like `@main`,
+- third-party actions not pinned to commit SHAs,
+- risky `pull_request_target` usage,
+- jobs without timeouts,
+- workflows without concurrency controls,
+- dependency installs without caching,
+- broad triggers that burn CI minutes unnecessarily.
 
 `gh-actions-doctor` catches those issues early and prints practical suggestions.
 
 ## Status
 
 This repository contains the first working preview. It can scan workflow files, report findings in text or JSON, and return CI-friendly exit codes.
+
+Looking for a place to help? Start here:
+
+- [Good first issues](https://github.com/Wezylnia/gh-actions-doctor/issues?q=is%3Aissue%20is%3Aopen%20label%3A%22good%20first%20issue%22)
+- [Help wanted](https://github.com/Wezylnia/gh-actions-doctor/issues?q=is%3Aissue%20is%3Aopen%20label%3A%22help%20wanted%22)
+- [Rule requests](https://github.com/Wezylnia/gh-actions-doctor/issues?q=is%3Aissue%20is%3Aopen%20label%3Aarea%3Arules)
 
 ## Requirements
 
@@ -131,11 +137,13 @@ Summary:
 | [`action-not-sha-pinned`](docs/rules/action-not-sha-pinned.md) | info | security | Reports third-party actions that are not pinned to a full commit SHA. |
 | [`risky-pull-request-target`](docs/rules/risky-pull-request-target.md) | warning/error | security | Reports `pull_request_target`, with errors for high-risk patterns. |
 | [`missing-timeout`](docs/rules/missing-timeout.md) | warning | reliability | Reports jobs without `timeout-minutes`. |
-| `missing-concurrency` | info | cost | Reports workflows that are likely to benefit from `concurrency`. |
+| [`missing-concurrency`](docs/rules/missing-concurrency.md) | info | cost | Reports workflows that are likely to benefit from `concurrency`. |
 | [`setup-node-cache-missing`](docs/rules/setup-node-cache-missing.md) | info | performance | Reports `actions/setup-node` usage without dependency caching. |
-| `broad-push-trigger` | info | cost | Reports workflows that run on every push without branch, tag, or path filters. |
-| `duplicate-workflow-name` | info | maintainability | Reports repeated workflow names across files. |
-| `yaml-parse-error` | error | correctness | Reports invalid workflow YAML without crashing the scan. |
+| [`broad-push-trigger`](docs/rules/broad-push-trigger.md) | info | cost | Reports workflows that run on every push without branch, tag, or path filters. |
+| [`duplicate-workflow-name`](docs/rules/duplicate-workflow-name.md) | info | maintainability | Reports repeated workflow names across files. |
+| [`yaml-parse-error`](docs/rules/yaml-parse-error.md) | error | correctness | Reports invalid workflow YAML without crashing the scan. |
+
+Want to add the next rule? The rule system is intentionally small: one rule class, focused tests, one docs page, and a README update. See [Adding a Rule](docs/contributing/adding-a-rule.md).
 
 ## CLI Reference
 
@@ -162,14 +170,14 @@ dotnet run --project src/GhActionsDoctor.Cli -- scan --format json
 
 The JSON payload includes:
 
-- summary counts
-- finding file path
-- severity
-- rule ID
-- category
-- message
-- suggestion
-- source line and column when available
+- summary counts,
+- finding file path,
+- severity,
+- rule ID,
+- category,
+- message,
+- suggestion,
+- source line and column when available.
 
 ## GitHub Actions Usage
 
@@ -213,12 +221,24 @@ dotnet tool install --tool-path .tmp/tools gh-actions-doctor --version 0.1.0-pre
 
 Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) and [docs/contributing/adding-a-rule.md](docs/contributing/adding-a-rule.md) for guidance.
 
-[Good first issues](https://github.com/Wezylnia/gh-actions-doctor/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22good%20first%20issue%22) · [Help wanted](https://github.com/Wezylnia/gh-actions-doctor/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22help%20wanted%22)
+Good contribution paths:
+
+- Add a focused workflow rule with tests and docs.
+- Improve source locations for findings.
+- Add reporter output such as SARIF or GitHub annotations.
+- Add sample workflows for common project types.
+- Improve parser resilience for real-world workflow YAML.
+
+[Good first issues](https://github.com/Wezylnia/gh-actions-doctor/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22good%20first%20issue%22) | [Help wanted](https://github.com/Wezylnia/gh-actions-doctor/issues?q=is%3Aissue%20state%3Aopen%20label%3A%22help%20wanted%22)
 
 ## Roadmap
 
-See [docs/roadmap.md](docs/roadmap.md) for the release roadmap and [docs/project-status.md](docs/project-status.md) for current preview readiness.
+See [docs/roadmap.md](docs/roadmap.md) for the release roadmap, [docs/project-status.md](docs/project-status.md) for current preview readiness, and [docs/rules/README.md](docs/rules/README.md) for the rule catalog.
+
+## Repository Governance
+
+The public repository is set up for small, reviewable contributions. `main` is protected, CI is required, and `CODEOWNERS` routes review to the maintainer. Issues are labeled by area and contribution type so new contributors can find bounded work.
 
 ## License
 
-MIT
+MIT. See [LICENSE](LICENSE).

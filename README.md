@@ -31,7 +31,9 @@ GitHub Actions workflows are often copied from project to project and then left 
 
 ## Status
 
-This repository contains the first working preview. It can scan workflow files, report findings in text or JSON, and return CI-friendly exit codes.
+Current release: `0.1.0`
+
+This repository contains the polished MVP. It can scan workflow files, report findings in text or JSON, promote stricter security findings, and return CI-friendly exit codes.
 
 Looking for a place to help? Start here:
 
@@ -47,19 +49,19 @@ This project currently targets `net10.0`.
 
 ## Install
 
-The first public package is planned as `0.1.0-preview.1`.
+The current package version is `0.1.0`.
 
 When published to NuGet:
 
 ```bash
-dotnet tool install --global gh-actions-doctor --version 0.1.0-preview.1
+dotnet tool install --global gh-actions-doctor --version 0.1.0
 ```
 
 From a locally packed package:
 
 ```bash
 dotnet pack src/GhActionsDoctor.Cli --configuration Release
-dotnet tool install --tool-path .tmp/tools gh-actions-doctor --version 0.1.0-preview.1 --add-source src/GhActionsDoctor.Cli/bin/Release
+dotnet tool install --tool-path .tmp/tools gh-actions-doctor --version 0.1.0 --add-source src/GhActionsDoctor.Cli/bin/Release
 .tmp/tools/gh-actions-doctor scan
 ```
 
@@ -215,7 +217,7 @@ Pack as a local .NET tool:
 
 ```bash
 dotnet pack src/GhActionsDoctor.Cli --configuration Release
-dotnet tool install --tool-path .tmp/tools gh-actions-doctor --version 0.1.0-preview.1 --add-source src/GhActionsDoctor.Cli/bin/Release
+dotnet tool install --tool-path .tmp/tools gh-actions-doctor --version 0.1.0 --add-source src/GhActionsDoctor.Cli/bin/Release
 .tmp/tools/gh-actions-doctor scan
 ```
 
@@ -235,7 +237,7 @@ Good contribution paths:
 
 ## Roadmap
 
-See [docs/roadmap.md](docs/roadmap.md) for the release roadmap, [docs/project-status.md](docs/project-status.md) for current preview readiness, and [docs/rules/README.md](docs/rules/README.md) for the rule catalog.
+See [docs/roadmap.md](docs/roadmap.md) for the release roadmap, [docs/project-status.md](docs/project-status.md) for current project status, and [docs/rules/README.md](docs/rules/README.md) for the rule catalog.
 
 ## Repository Governance
 

@@ -4,13 +4,13 @@ This public status document tracks user-facing progress from the current MVP tow
 
 Private planning files such as `project.md`, `plan.md`, and `docs/development-notes.md` are intentionally local-only and ignored by Git.
 
-## Current Version Target
+## Current Version
 
-Current preview: [`0.1.0-preview.1`](https://github.com/Wezylnia/gh-actions-doctor/releases/tag/v0.1.0-preview.1)
+Current release: `0.1.0`
 
-Goal: make the current tool installable, documented, and safe to share publicly.
+Goal: keep the polished MVP stable while preparing configuration support for `v0.2.0`.
 
-## Completed For Preview
+## Completed In v0.1.0
 
 - .NET 10 target framework.
 - Package metadata for the CLI .NET tool.
@@ -24,21 +24,25 @@ Goal: make the current tool installable, documented, and safe to share publicly.
 - CI build and test workflow.
 - CI self-scan step.
 - README install and usage documentation.
+- Workflow hardening checklist.
 - Public release files:
   - `CHANGELOG.md`
   - `CONTRIBUTING.md`
   - `CODE_OF_CONDUCT.md`
   - `SECURITY.md`
-- First rule docs:
+- Initial rule docs:
   - `missing-permissions`
   - `missing-timeout`
   - `mutable-action-reference`
   - `action-not-sha-pinned`
   - `risky-pull-request-target`
-- CI is green for the preview preparation commit.
+- Rule docs for all current rules.
+- Parser and reporter test coverage.
+- CI is green for the release preparation commit.
 - README CI badge has been added.
 - GitHub release `v0.1.0-preview.1` is published.
 - The generated `.nupkg` is attached to the GitHub release.
+- GitHub release `v0.1.0` is prepared from the polished MVP state.
 
 ## Repository Protection
 
@@ -57,22 +61,25 @@ The repository is configured so public contribution should flow through pull req
 - The most recent push must be approved by someone other than the pusher.
 - GitHub Copilot is configured for automatic pull request review on pushes to PRs targeting `main`.
 
-## Remaining For Preview
+## Remaining Before v0.2.0
 
-No required repository tasks remain for `v0.1.0-preview.1`.
+- Add `.gh-actions-doctor.yml` configuration support.
+- Add rule disabling and severity overrides.
+- Add path and rule ignores.
+- Add config parse validation and CLI error output.
+- Document config examples.
 
-NuGet publishing is intentionally separate and can be done after the GitHub preview release is reviewed.
+NuGet publishing is intentionally separate and can be done after the GitHub release is reviewed.
 
-## Next After Preview
+## Next Release
 
-The next milestone is `v0.1.0`, focused on:
+The next milestone is `v0.2.0`, focused on:
 
-- docs for all 10 current rules
-- parser-specific tests
-- reporter-specific tests
-- CLI end-to-end tests
-- remaining source-location polish
-- first polished MVP release
+- repository-local configuration
+- rule and path ignores
+- severity overrides
+- config precedence with CLI flags
+- config-focused tests and documentation
 
 ## Validation Commands
 
@@ -80,6 +87,6 @@ The next milestone is `v0.1.0`, focused on:
 dotnet build GhActionsDoctor.sln --configuration Release
 dotnet test GhActionsDoctor.sln --configuration Release --no-build
 dotnet pack src/GhActionsDoctor.Cli --configuration Release --no-build
-dotnet tool install --tool-path .tmp/tools gh-actions-doctor --version 0.1.0-preview.1 --add-source src/GhActionsDoctor.Cli/bin/Release
+dotnet tool install --tool-path .tmp/tools gh-actions-doctor --version 0.1.0 --add-source src/GhActionsDoctor.Cli/bin/Release
 dotnet run --project src/GhActionsDoctor.Cli -- scan --path samples/bad --fail-on none
 ```

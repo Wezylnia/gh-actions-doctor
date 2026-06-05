@@ -2,7 +2,7 @@
 
 This roadmap describes the public path from the current MVP to `v1.0.0`.
 
-## v0.1.0-preview.1
+## v0.1.0-preview.1 - shipped
 
 Focus: package and documentation readiness.
 
@@ -12,7 +12,7 @@ Focus: package and documentation readiness.
 - Add release files.
 - Run the tool against this repository in CI.
 
-## v0.1.0
+## v0.1.0 - shipped
 
 Focus: polished MVP.
 
@@ -22,6 +22,8 @@ Focus: polished MVP.
 - Add CLI end-to-end tests.
 - Improve remaining source locations.
 - Publish the first polished release.
+- Refresh package dependencies and release metadata.
+- Link the workflow hardening checklist from user-facing docs.
 
 ## v0.2.0
 
@@ -32,6 +34,7 @@ Focus: configuration support.
 - Allow severity overrides.
 - Allow file/rule ignores.
 - Add config parse validation.
+- Document config precedence with `--include`, `--exclude`, and `--strict`.
 
 ## v0.3.0
 

@@ -2,10 +2,11 @@
 
 ## Supported Versions
 
-`gh-actions-doctor` is currently in preview. Security fixes will target the latest preview release until a stable version exists.
+`gh-actions-doctor` is currently pre-1.0. Security fixes target the latest released `0.1.x` version until a stable version exists.
 
 | Version | Supported |
 | --- | --- |
+| `0.1.x` | Yes |
 | `0.1.x-preview` | Yes |
 
 ## Reporting a Vulnerability

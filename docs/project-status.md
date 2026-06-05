@@ -6,9 +6,9 @@ Private planning files such as `project.md`, `plan.md`, and `docs/development-no
 
 ## Current Version
 
-Current release: `0.1.0`
+Current release: `0.2.0`
 
-Goal: keep the polished MVP stable while preparing configuration support for `v0.2.0`.
+Goal: keep configuration support stable while preparing GitHub Actions integration for `v0.3.0`.
 
 ## Completed In v0.1.0
 
@@ -61,25 +61,24 @@ The repository is configured so public contribution should flow through pull req
 - The most recent push must be approved by someone other than the pusher.
 - GitHub Copilot is configured for automatic pull request review on pushes to PRs targeting `main`.
 
-## Remaining Before v0.2.0
+## Completed In v0.2.0
 
 - Add `.gh-actions-doctor.yml` configuration support.
 - Add rule disabling and severity overrides.
-- Add path and rule ignores.
+- Add path, format, fail threshold, strict mode, include, exclude, disabled rule, and severity override config fields.
 - Add config parse validation and CLI error output.
 - Document config examples.
+- Add config behavior tests.
 
 NuGet publishing is intentionally separate and can be done after the GitHub release is reviewed.
 
 ## Next Release
 
-The next milestone is `v0.2.0`, focused on:
+The next milestone is `v0.3.0`, focused on:
 
-- repository-local configuration
-- rule and path ignores
-- severity overrides
-- config precedence with CLI flags
-- config-focused tests and documentation
+- GitHub annotation output
+- official GitHub Action wrapper
+- CI-focused documentation and tests
 
 ## Validation Commands
 
@@ -87,6 +86,6 @@ The next milestone is `v0.2.0`, focused on:
 dotnet build GhActionsDoctor.sln --configuration Release
 dotnet test GhActionsDoctor.sln --configuration Release --no-build
 dotnet pack src/GhActionsDoctor.Cli --configuration Release --no-build
-dotnet tool install --tool-path .tmp/tools gh-actions-doctor --version 0.1.0 --add-source src/GhActionsDoctor.Cli/bin/Release
+dotnet tool install --tool-path .tmp/tools gh-actions-doctor --version 0.2.0 --add-source src/GhActionsDoctor.Cli/bin/Release
 dotnet run --project src/GhActionsDoctor.Cli -- scan --path samples/bad --fail-on none
 ```

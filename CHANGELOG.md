@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 
 The project follows preview releases until the first stable `1.0.0`.
 
+## 0.2.0 - 2026-06-05
+
+### Added
+
+- `.gh-actions-doctor.yml` and `.gh-actions-doctor.yaml` configuration loading from the current repository root.
+- `--config <path|none>` CLI option.
+- Config support for path, output format, fail threshold, strict mode, include/exclude rules, disabled rules, and per-rule severity overrides.
+- Unit tests for config loading, config disabling, CLI precedence, and severity override behavior.
+- Configuration reference documentation.
+
+### Changed
+
+- CLI-provided values now take precedence over matching config-file fields.
+- Package version updated to `0.2.0`.
+
 ## 0.1.0 - 2026-06-05
 
 ### Added

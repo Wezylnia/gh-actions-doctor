@@ -25,7 +25,7 @@ Focus: polished MVP.
 - Refresh package dependencies and release metadata.
 - Link the workflow hardening checklist from user-facing docs.
 
-## v0.2.0
+## v0.2.0 - shipped
 
 Focus: configuration support.
 

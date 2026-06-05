@@ -31,7 +31,7 @@ GitHub Actions workflows are often copied from project to project and then left 
 
 ## Status
 
-Current release: `0.1.0`
+Current release: `0.2.0`
 
 This repository contains the polished MVP. It can scan workflow files, report findings in text or JSON, promote stricter security findings, and return CI-friendly exit codes.
 
@@ -49,19 +49,19 @@ This project currently targets `net10.0`.
 
 ## Install
 
-The current package version is `0.1.0`.
+The current package version is `0.2.0`.
 
 When published to NuGet:
 
 ```bash
-dotnet tool install --global gh-actions-doctor --version 0.1.0
+dotnet tool install --global gh-actions-doctor --version 0.2.0
 ```
 
 From a locally packed package:
 
 ```bash
 dotnet pack src/GhActionsDoctor.Cli --configuration Release
-dotnet tool install --tool-path .tmp/tools gh-actions-doctor --version 0.1.0 --add-source src/GhActionsDoctor.Cli/bin/Release
+dotnet tool install --tool-path .tmp/tools gh-actions-doctor --version 0.2.0 --add-source src/GhActionsDoctor.Cli/bin/Release
 .tmp/tools/gh-actions-doctor scan
 ```
 
@@ -160,7 +160,25 @@ Options:
   --include <rule-id,...>       Run only selected rules.
   --exclude <rule-id,...>       Skip selected rules.
   --strict                      Promote selected security findings.
+  --config <path|none>          Config file. Defaults to .gh-actions-doctor.yml if present.
 ```
+
+## Configuration
+
+`gh-actions-doctor` automatically reads `.gh-actions-doctor.yml` or `.gh-actions-doctor.yaml` from the current repository root when present. Use `--config <path>` to select a file or `--config none` to disable config loading.
+
+```yaml
+path: .github/workflows
+format: text
+failOn: warning
+strict: true
+exclude:
+  - action-not-sha-pinned
+severity:
+  missing-permissions: error
+```
+
+CLI-provided values take precedence over the matching config fields. See [Configuration](docs/configuration.md) for the full reference.
 
 ## JSON Output
 
@@ -217,7 +235,7 @@ Pack as a local .NET tool:
 
 ```bash
 dotnet pack src/GhActionsDoctor.Cli --configuration Release
-dotnet tool install --tool-path .tmp/tools gh-actions-doctor --version 0.1.0 --add-source src/GhActionsDoctor.Cli/bin/Release
+dotnet tool install --tool-path .tmp/tools gh-actions-doctor --version 0.2.0 --add-source src/GhActionsDoctor.Cli/bin/Release
 .tmp/tools/gh-actions-doctor scan
 ```
 

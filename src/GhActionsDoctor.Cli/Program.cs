@@ -56,6 +56,7 @@ internal static class ProgramMain
           --include <rule-id,...>       Run only selected rules.
           --exclude <rule-id,...>       Skip selected rules.
           --strict                      Promote selected security findings.
+          --config <path|none>          Config file. Defaults to .gh-actions-doctor.yml if present.
         """);
     }
 }

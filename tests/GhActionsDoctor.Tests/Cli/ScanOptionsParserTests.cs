@@ -3,6 +3,7 @@ using GhActionsDoctor.Core.Models;
 
 namespace GhActionsDoctor.Tests.Cli;
 
+[Collection("UsesCurrentDirectory")]
 public sealed class ScanOptionsParserTests
 {
     private readonly ScanOptionsParser _parser = new();
@@ -56,12 +57,89 @@ public sealed class ScanOptionsParserTests
         Assert.Null(parsed.Options.FailOn);
     }
 
+    [Fact]
+    public void Loads_default_config_file_from_current_directory()
+    {
+        using var directory = new TempWorkingDirectory();
+        directory.Write(
+            ".gh-actions-doctor.yml",
+            """
+            path: workflows
+            format: json
+            failOn: warning
+            strict: true
+            include:
+              - missing-permissions
+            severity:
+              action-not-sha-pinned: warning
+            """);
+
+        var parsed = _parser.Parse([]);
+
+        Assert.True(parsed.Success);
+        Assert.NotNull(parsed.Options);
+        Assert.Equal("workflows", parsed.Options.Path);
+        Assert.Equal(OutputFormat.Json, parsed.Options.Format);
+        Assert.Equal(RuleSeverity.Warning, parsed.Options.FailOn);
+        Assert.True(parsed.Options.Strict);
+        Assert.Contains("missing-permissions", parsed.Options.IncludeRules);
+        Assert.Equal(RuleSeverity.Warning, parsed.Options.SeverityOverrides["action-not-sha-pinned"]);
+    }
+
+    [Fact]
+    public void Cli_options_override_config_values()
+    {
+        using var directory = new TempWorkingDirectory();
+        directory.Write(
+            ".gh-actions-doctor.yml",
+            """
+            path: configured
+            format: json
+            failOn: warning
+            include:
+              - missing-permissions
+            """);
+
+        var parsed = _parser.Parse([
+            "--path", "cli",
+            "--format", "text",
+            "--fail-on", "none",
+            "--exclude", "missing-permissions"
+        ]);
+
+        Assert.True(parsed.Success);
+        Assert.NotNull(parsed.Options);
+        Assert.Equal("cli", parsed.Options.Path);
+        Assert.Equal(OutputFormat.Text, parsed.Options.Format);
+        Assert.Null(parsed.Options.FailOn);
+        Assert.Contains("missing-permissions", parsed.Options.IncludeRules);
+        Assert.Contains("missing-permissions", parsed.Options.ExcludeRules);
+    }
+
+    [Fact]
+    public void Config_none_disables_default_config_file()
+    {
+        using var directory = new TempWorkingDirectory();
+        directory.Write(
+            ".gh-actions-doctor.yml",
+            """
+            path: configured
+            """);
+
+        var parsed = _parser.Parse(["--config", "none"]);
+
+        Assert.True(parsed.Success);
+        Assert.NotNull(parsed.Options);
+        Assert.Equal(ScanOptions.Default.Path, parsed.Options.Path);
+    }
+
     [Theory]
     [InlineData("--path")]
     [InlineData("--format")]
     [InlineData("--fail-on")]
     [InlineData("--include")]
     [InlineData("--exclude")]
+    [InlineData("--config")]
     public void Rejects_options_missing_a_value(string option)
     {
         var parsed = _parser.Parse([option]);
@@ -95,5 +173,42 @@ public sealed class ScanOptionsParserTests
 
         Assert.False(parsed.Success);
         Assert.Equal("Unknown option: --unknown", parsed.Error);
+    }
+}
+
+[CollectionDefinition("UsesCurrentDirectory", DisableParallelization = true)]
+public sealed class UsesCurrentDirectoryCollection
+{
+}
+
+internal sealed class TempWorkingDirectory : IDisposable
+{
+    private readonly string previousDirectory = Directory.GetCurrentDirectory();
+
+    public TempWorkingDirectory()
+    {
+        Path = System.IO.Path.Combine(System.IO.Path.GetTempPath(), "gh-actions-doctor-config-" + Guid.NewGuid());
+        Directory.CreateDirectory(Path);
+        Directory.SetCurrentDirectory(Path);
+    }
+
+    public string Path { get; }
+
+    public void Write(string relativePath, string contents)
+    {
+        var filePath = System.IO.Path.Combine(Path, relativePath);
+        var parent = System.IO.Path.GetDirectoryName(filePath);
+        if (parent is not null)
+        {
+            Directory.CreateDirectory(parent);
+        }
+
+        File.WriteAllText(filePath, contents);
+    }
+
+    public void Dispose()
+    {
+        Directory.SetCurrentDirectory(previousDirectory);
+        Directory.Delete(Path, recursive: true);
     }
 }

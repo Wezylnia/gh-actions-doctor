@@ -4,6 +4,10 @@
     <ProjectReference Include="..\GhActionsDoctor.Core\GhActionsDoctor.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="YamlDotNet" Version="18.0.0" />
+  </ItemGroup>
+
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net10.0</TargetFramework>
@@ -12,7 +16,7 @@
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>gh-actions-doctor</ToolCommandName>
     <PackageId>gh-actions-doctor</PackageId>
-    <Version>0.1.0</Version>
+    <Version>0.2.0</Version>
     <Title>GitHub Actions Doctor</Title>
     <Authors>Wezylnia</Authors>
     <Description>A lightweight CLI that scans GitHub Actions workflows for security, reliability, performance, and cost issues.</Description>
@@ -22,7 +26,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageReleaseNotes>Polished MVP release with workflow discovery, YAML parsing, text and JSON output, fail-on support, rule filtering, strict mode, dependency updates, expanded parser/reporter tests, and 10 built-in rules.</PackageReleaseNotes>
+    <PackageReleaseNotes>Configuration release with .gh-actions-doctor.yml support, --config, fail-on/strict/filter config fields, severity overrides, and config behavior tests.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

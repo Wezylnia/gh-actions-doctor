@@ -57,6 +57,26 @@ public sealed class RuleRunnerTests : IDisposable
         Assert.Equal("yaml-parse-error", finding.RuleId);
     }
 
+    [Fact]
+    public void Severity_overrides_are_applied_to_rule_findings()
+    {
+        var workflow = _harness.Parse(ValidWorkflow());
+        var runner = new RuleRunner([new StaticRule("selected-rule")]);
+
+        var findings = runner.Run(
+            [workflow],
+            ScanOptions.Default with
+            {
+                SeverityOverrides = new Dictionary<string, RuleSeverity>(StringComparer.OrdinalIgnoreCase)
+                {
+                    ["selected-rule"] = RuleSeverity.Error
+                }
+            });
+
+        var finding = Assert.Single(findings);
+        Assert.Equal(RuleSeverity.Error, finding.Severity);
+    }
+
     public void Dispose()
     {
         _harness.Dispose();

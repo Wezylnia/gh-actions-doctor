@@ -19,7 +19,7 @@ public sealed class RuleRunner
         var context = new RuleContext(workflows, options);
         foreach (var rule in _rules.Where(rule => ShouldRun(rule.Id, options)))
         {
-            findings.AddRange(rule.Analyze(context));
+            findings.AddRange(rule.Analyze(context).Select(finding => ApplySeverityOverride(finding, options)));
         }
 
         return findings
@@ -38,4 +38,9 @@ public sealed class RuleRunner
 
         return !options.ExcludeRules.Contains(ruleId);
     }
+
+    private static Finding ApplySeverityOverride(Finding finding, ScanOptions options) =>
+        options.SeverityOverrides.TryGetValue(finding.RuleId, out var severity)
+            ? finding with { Severity = severity }
+            : finding;
 }

@@ -6,7 +6,8 @@ public sealed record ScanOptions(
     RuleSeverity? FailOn,
     bool Strict,
     IReadOnlySet<string> IncludeRules,
-    IReadOnlySet<string> ExcludeRules)
+    IReadOnlySet<string> ExcludeRules,
+    IReadOnlyDictionary<string, RuleSeverity> SeverityOverrides)
 {
     public static ScanOptions Default { get; } = new(
         Path: System.IO.Path.Combine(".", ".github", "workflows"),
@@ -14,5 +15,6 @@ public sealed record ScanOptions(
         FailOn: RuleSeverity.Error,
         Strict: false,
         IncludeRules: new HashSet<string>(StringComparer.OrdinalIgnoreCase),
-        ExcludeRules: new HashSet<string>(StringComparer.OrdinalIgnoreCase));
+        ExcludeRules: new HashSet<string>(StringComparer.OrdinalIgnoreCase),
+        SeverityOverrides: new Dictionary<string, RuleSeverity>(StringComparer.OrdinalIgnoreCase));
 }

@@ -6,12 +6,16 @@ public sealed class ScanOptionsParser
 {
     public ScanOptionsParseResult Parse(string[] args)
     {
-        var path = ScanOptions.Default.Path;
-        var format = OutputFormat.Text;
-        RuleSeverity? failOn = RuleSeverity.Error;
-        var strict = false;
+        string? path = null;
+        OutputFormat? format = null;
+        RuleSeverity? failOn = null;
+        var failOnSet = false;
+        bool? strict = null;
         var include = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var includeSet = false;
         var exclude = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var excludeSet = false;
+        string? configPath = null;
 
         for (var index = 0; index < args.Length; index++)
         {
@@ -31,11 +35,12 @@ public sealed class ScanOptionsParser
                         return ScanOptionsParseResult.Fail(formatError);
                     }
 
-                    if (!TryParseFormat(formatValue, out format))
+                    if (!TryParseFormat(formatValue, out var parsedFormat))
                     {
                         return ScanOptionsParseResult.Fail("Invalid --format value. Supported values: text, json.");
                     }
 
+                    format = parsedFormat;
                     break;
                 case "--fail-on":
                     if (!TryReadValue(args, ref index, arg, out var failOnValue, out var failOnError))
@@ -48,6 +53,7 @@ public sealed class ScanOptionsParser
                         return ScanOptionsParseResult.Fail("Invalid --fail-on value. Supported values: error, warning, info, none.");
                     }
 
+                    failOnSet = true;
                     break;
                 case "--include":
                     if (!TryReadValue(args, ref index, arg, out var includeValue, out var includeError))
@@ -56,6 +62,7 @@ public sealed class ScanOptionsParser
                     }
 
                     AddCsv(include, includeValue);
+                    includeSet = true;
                     break;
                 case "--exclude":
                     if (!TryReadValue(args, ref index, arg, out var excludeValue, out var excludeError))
@@ -64,16 +71,39 @@ public sealed class ScanOptionsParser
                     }
 
                     AddCsv(exclude, excludeValue);
+                    excludeSet = true;
                     break;
                 case "--strict":
                     strict = true;
+                    break;
+                case "--config":
+                    if (!TryReadValue(args, ref index, arg, out configPath, out var configError))
+                    {
+                        return ScanOptionsParseResult.Fail(configError);
+                    }
+
                     break;
                 default:
                     return ScanOptionsParseResult.Fail($"Unknown option: {arg}");
             }
         }
 
-        return ScanOptionsParseResult.Ok(new ScanOptions(path, format, failOn, strict, include, exclude));
+        var config = ScanConfigLoader.Load(configPath);
+        if (config.Error is not null)
+        {
+            return ScanOptionsParseResult.Fail(config.Error);
+        }
+
+        var options = new ScanOptions(
+            path ?? config.Config.Path ?? ScanOptions.Default.Path,
+            format ?? config.Config.Format ?? OutputFormat.Text,
+            failOnSet ? failOn : config.Config.FailOnSet ? config.Config.FailOn : RuleSeverity.Error,
+            strict ?? config.Config.Strict ?? false,
+            includeSet ? include : config.Config.IncludeRules,
+            excludeSet ? exclude : config.Config.ExcludeRules,
+            config.Config.SeverityOverrides);
+
+        return ScanOptionsParseResult.Ok(options);
     }
 
     private static bool TryReadValue(string[] args, ref int index, string option, out string value, out string error)

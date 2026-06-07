@@ -61,7 +61,7 @@ From a locally packed package:
 
 ```bash
 dotnet pack src/GhActionsDoctor.Cli --configuration Release
-dotnet tool install --tool-path .tmp/tools gh-actions-doctor --version 0.7.0 --add-source src/GhActionsDoctor.Cli/bin/Release
+dotnet tool install --tool-path .tmp/tools gh-actions-doctor --version 1.0.0 --add-source src/GhActionsDoctor.Cli/bin/Release
 .tmp/tools/gh-actions-doctor scan
 ```
 

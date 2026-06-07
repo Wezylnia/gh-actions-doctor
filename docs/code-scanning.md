@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - uses: Wezylnia/gh-actions-doctor@v0.7.0
+      - uses: Wezylnia/gh-actions-doctor@v1.0.0
         with:
           format: sarif
           fail-on: none

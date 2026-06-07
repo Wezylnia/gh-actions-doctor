@@ -4,7 +4,7 @@ Use the composite action to scan workflow files in pull requests.
 
 ```yaml
 - uses: actions/checkout@v6
-- uses: Wezylnia/gh-actions-doctor@v0.7.0
+- uses: Wezylnia/gh-actions-doctor@v1.0.0
   with:
     path: .github/workflows
     format: github-annotations
@@ -21,4 +21,3 @@ Use the composite action to scan workflow files in pull requests.
 | `config` | empty | Optional config file path. |
 | `dotnet-version` | `10.0.x` | .NET SDK version. |
 | `output` | empty | Optional path where scanner output is written. |
-

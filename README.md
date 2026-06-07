@@ -31,7 +31,7 @@ GitHub Actions workflows are often copied from project to project and then left 
 
 ## Status
 
-Current release: `0.7.0`
+Current release: `0.9.0`
 
 This repository contains a CI-ready preview release. It can scan workflow files, report findings in text, JSON, GitHub annotations, and SARIF, apply conservative safe fixes, suppress known findings with baselines, and return CI-friendly exit codes.
 
@@ -49,7 +49,7 @@ This project currently targets `net10.0`.
 
 ## Install
 
-The current package version is `0.7.0`.
+The current package version is `0.9.0`.
 
 When published to NuGet:
 

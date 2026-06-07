@@ -16,7 +16,8 @@
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>gh-actions-doctor</ToolCommandName>
     <PackageId>gh-actions-doctor</PackageId>
-    <Version>0.9.0</Version>
+    <Version>1.0.0</Version>
+    <PackageReleaseNotes>v1.0.0 is the first stable release, locking down CLI behavior, JSON/SARIF output, configuration, baseline and suppression workflows, safe fixes, documentation, and CI validation.</PackageReleaseNotes>
     <Title>GitHub Actions Doctor</Title>
     <Authors>Wezylnia</Authors>
     <Description>A lightweight CLI that scans GitHub Actions workflows for security, reliability, performance, and cost issues.</Description>

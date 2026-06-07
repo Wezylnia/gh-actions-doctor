@@ -1,14 +1,39 @@
 # Project Status
 
-This public status document tracks user-facing progress from the current preview release toward `v1.0.0`.
+This public status document tracks user-facing progress from the first preview release through the current stable release.
 
 ## Current Version
 
-Current release: `0.7.0`
+Current release: `1.0.0`
 
-Goal: stabilize baseline, suppression, SARIF, annotation, and safe-fix behavior before the first stable release.
+Goal: first stable release. All documented CLI, JSON, SARIF, configuration, baseline, suppression, and safe-fix behavior is locked down.
 
-## Completed In v0.1.0
+## Completed In v1.0.0
+
+- Stabilize documented CLI, JSON, SARIF, configuration, baseline, suppression, and safe-fix behavior for public CI usage.
+- Refresh all documentation, project status, roadmap, package metadata, and install examples.
+
+## Completed In v0.9.0
+
+- Add `release-workflow-overprivileged-token`, `remote-script-execution`, and `secret-echo-risk` security rules.
+- Add SARIF `partialFingerprints`.
+- Add machine-readable JSON schemas.
+
+## Completed In v0.8.0
+
+- Split fix command into dedicated `FixOptionsParser`.
+- Make `WorkflowFixer` rule-scoped and parse-aware (skip invalid/complex YAML).
+- Add stable baseline fingerprints and `--prune-baseline`.
+- Add `--show-suppressions`.
+
+## Completed In v0.7.0
+
+- Add baseline suppression, generation, and inline suppression comments.
+- Add adoption guide.
+
+## Completed In v0.6.0
+
+- Add `overbroad-id-token-permission`, `pull-request-target-untrusted-checkout`, and `untrusted-expression-in-run` security rules.
 
 - .NET 10 target framework.
 - Package metadata for the CLI .NET tool.

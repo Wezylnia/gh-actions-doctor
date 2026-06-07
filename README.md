@@ -31,9 +31,9 @@ GitHub Actions workflows are often copied from project to project and then left 
 
 ## Status
 
-Current release: `0.9.0`
+Current release: `1.0.0`
 
-This repository contains a CI-ready preview release. It can scan workflow files, report findings in text, JSON, GitHub annotations, and SARIF, apply conservative safe fixes, suppress known findings with baselines, and return CI-friendly exit codes.
+This is the first stable release. It can scan workflow files, report findings in text, JSON, GitHub annotations, and SARIF, apply conservative safe fixes, suppress known findings with baselines, and return CI-friendly exit codes.
 
 Looking for a place to help? Start here:
 
@@ -49,12 +49,12 @@ This project currently targets `net10.0`.
 
 ## Install
 
-The current package version is `0.9.0`.
+The current package version is `1.0.0`.
 
 When published to NuGet:
 
 ```bash
-dotnet tool install --global gh-actions-doctor --version 0.7.0
+dotnet tool install --global gh-actions-doctor --version 1.0.0
 ```
 
 From a locally packed package:
@@ -282,7 +282,7 @@ Pack as a local .NET tool:
 
 ```bash
 dotnet pack src/GhActionsDoctor.Cli --configuration Release
-dotnet tool install --tool-path .tmp/tools gh-actions-doctor --version 0.7.0 --add-source src/GhActionsDoctor.Cli/bin/Release
+dotnet tool install --tool-path .tmp/tools gh-actions-doctor --version 1.0.0 --add-source src/GhActionsDoctor.Cli/bin/Release
 .tmp/tools/gh-actions-doctor scan
 ```
 

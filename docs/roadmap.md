@@ -74,9 +74,33 @@ Focus: adoption controls.
 - Add baseline generation.
 - Add inline suppression comments.
 
-## v1.0.0
+## v0.8.0 - shipped
 
-Focus: stable public release.
+Focus: existing feature hardening.
+
+- Split fix command into dedicated parser.
+- Make fixer rule-scoped and parse-aware (skip invalid/complex YAML).
+- Add baseline fingerprints and prune.
+- Add `--show-suppressions`.
+
+## v0.9.0 - shipped
+
+Focus: security coverage and v1 readiness.
+
+- Add release workflow overprivileged token rule.
+- Add remote script execution rule.
+- Add secret echo risk rule.
+- Add SARIF `partialFingerprints`.
+- Add machine-readable JSON schemas.
+
+## v1.0.0 - shipped
+
+Focus: first stable public release.
+
+- Stabilize CLI, JSON, SARIF, configuration, baseline, and suppression behavior.
+- Refresh documentation and project metadata for stable release.
+
+## After v1.0
 
 - Stable CLI.
 - Stable JSON and SARIF behavior.

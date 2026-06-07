@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 
 The project follows preview releases until the first stable `1.0.0`.
 
+## 1.0.0 - 2026-06-07
+
+### Added
+
+- Stable release documentation and validation coverage.
+
+### Changed
+
+- Package version updated to `1.0.0`.
+- Stabilized documented CLI, JSON, SARIF, configuration, baseline, suppression, and safe-fix behavior for public CI usage.
+
+### Fixed
+
+- Corrected stale installation and project status documentation from preview releases.
+
 ## 0.9.0 - 2026-06-07
 
 ### Added

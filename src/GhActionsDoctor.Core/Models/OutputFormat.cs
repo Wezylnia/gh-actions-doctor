@@ -3,5 +3,6 @@ namespace GhActionsDoctor.Core.Models;
 public enum OutputFormat
 {
     Text,
-    Json
+    Json,
+    GitHubAnnotations
 }

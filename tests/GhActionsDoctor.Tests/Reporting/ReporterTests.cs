@@ -81,4 +81,98 @@ public sealed class ReporterTests
         Assert.Contains("missing-permissions line 1", output, StringComparison.Ordinal);
         Assert.Contains("Add permissions: contents: read.", output, StringComparison.Ordinal);
     }
+
+    [Fact]
+    public void GitHubAnnotationsReporter_emits_warning_for_warning_finding()
+    {
+        var result = new ScanResult(
+            FilesScanned: 1,
+            Findings:
+            [
+                new Finding(
+                    RuleId: "missing-timeout",
+                    FilePath: ".github/workflows/ci.yml",
+                    Severity: RuleSeverity.Warning,
+                    Category: RuleCategory.Reliability,
+                    Message: "Job 'build' does not define timeout-minutes.",
+                    Suggestion: "Add timeout-minutes.",
+                    Line: 10,
+                    Column: 5)
+            ]);
+
+        var output = new GitHubAnnotationsReporter().Render(result);
+
+        Assert.Contains("::warning", output, StringComparison.Ordinal);
+        Assert.Contains("file=.github/workflows/ci.yml", output, StringComparison.Ordinal);
+        Assert.Contains("line=10", output, StringComparison.Ordinal);
+        Assert.Contains("col=5", output, StringComparison.Ordinal);
+        Assert.Contains("title=missing-timeout", output, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void GitHubAnnotationsReporter_emits_error_for_error_finding()
+    {
+        var result = new ScanResult(
+            FilesScanned: 1,
+            Findings:
+            [
+                new Finding(
+                    RuleId: "yaml-parse-error",
+                    FilePath: ".github/workflows/broken.yml",
+                    Severity: RuleSeverity.Error,
+                    Category: RuleCategory.Correctness,
+                    Message: "Invalid YAML.",
+                    Suggestion: "Fix the syntax.",
+                    Line: 1)
+            ]);
+
+        var output = new GitHubAnnotationsReporter().Render(result);
+
+        Assert.Contains("::error", output, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void GitHubAnnotationsReporter_emits_notice_for_info_finding()
+    {
+        var result = new ScanResult(
+            FilesScanned: 1,
+            Findings:
+            [
+                new Finding(
+                    RuleId: "setup-node-cache-missing",
+                    FilePath: ".github/workflows/ci.yml",
+                    Severity: RuleSeverity.Info,
+                    Category: RuleCategory.Performance,
+                    Message: "Cache missing.",
+                    Suggestion: "Add cache.",
+                    Line: 5)
+            ]);
+
+        var output = new GitHubAnnotationsReporter().Render(result);
+
+        Assert.Contains("::notice", output, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void GitHubAnnotationsReporter_escapes_special_characters()
+    {
+        var result = new ScanResult(
+            FilesScanned: 1,
+            Findings:
+            [
+                new Finding(
+                    RuleId: "test-rule",
+                    FilePath: "file:name.yml",
+                    Severity: RuleSeverity.Warning,
+                    Category: RuleCategory.Security,
+                    Message: "Value has % sign.",
+                    Suggestion: "Fix it.",
+                    Line: 1)
+            ]);
+
+        var output = new GitHubAnnotationsReporter().Render(result);
+
+        Assert.Contains("file=file%3Aname.yml", output, StringComparison.Ordinal);
+        Assert.Contains("%25 sign", output, StringComparison.Ordinal);
+    }
 }

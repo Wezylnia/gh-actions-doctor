@@ -32,9 +32,12 @@ internal static class ProgramMain
         var options = parsedOptions.Options!;
         var scanner = new WorkflowScanner();
         var result = scanner.Scan(options);
-        var output = options.Format == OutputFormat.Json
-            ? new JsonReporter().Render(result)
-            : new TextReporter().Render(result);
+        var output = options.Format switch
+        {
+            OutputFormat.Json => new JsonReporter().Render(result),
+            OutputFormat.GitHubAnnotations => new GitHubAnnotationsReporter().Render(result),
+            _ => new TextReporter().Render(result)
+        };
 
         Console.WriteLine(output);
         return ExitCodeCalculator.Calculate(result, options.FailOn);
@@ -50,7 +53,7 @@ internal static class ProgramMain
 
         Options:
           --path <path>                 Workflow directory or file. Defaults to ./.github/workflows.
-          --format <text|json>          Output format. Defaults to text.
+          --format <text|json|github-annotations>          Output format. Defaults to text.
           --fail-on <error|warning|info|none>
                                         Controls non-zero exit code. Defaults to error.
           --include <rule-id,...>       Run only selected rules.

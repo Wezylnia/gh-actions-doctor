@@ -1,0 +1,44 @@
+name: gh-actions-doctor
+description: Scan GitHub Actions workflows for security, reliability, and performance issues.
+
+inputs:
+  path:
+    description: Workflow directory or file to scan.
+    required: false
+    default: .github/workflows
+  format:
+    description: Output format (text, json, github-annotations).
+    required: false
+    default: github-annotations
+  fail-on:
+    description: Severity threshold for non-zero exit code (error, warning, info, none).
+    required: false
+    default: warning
+  config:
+    description: Optional config file path.
+    required: false
+    default: ""
+  dotnet-version:
+    description: .NET SDK version.
+    required: false
+    default: 10.0.x
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-dotnet@v5
+      with:
+        dotnet-version: ${{ inputs.dotnet-version }}
+
+    - name: Install gh-actions-doctor
+      shell: bash
+      run: dotnet tool install --global gh-actions-doctor --version 0.3.0
+
+    - name: Run gh-actions-doctor
+      shell: bash
+      run: |
+        ARGS="scan --path \"${{ inputs.path }}\" --format \"${{ inputs.format }}\" --fail-on \"${{ inputs.fail-on }}\""
+        if [ -n "${{ inputs.config }}" ]; then
+          ARGS="$ARGS --config \"${{ inputs.config }}\""
+        fi
+        gh-actions-doctor $ARGS

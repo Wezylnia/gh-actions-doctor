@@ -37,7 +37,7 @@ public sealed class ScanOptionsParser
 
                     if (!TryParseFormat(formatValue, out var parsedFormat))
                     {
-                        return ScanOptionsParseResult.Fail("Invalid --format value. Supported values: text, json.");
+                        return ScanOptionsParseResult.Fail("Invalid --format value. Supported values: text, json, github-annotations.");
                     }
 
                     format = parsedFormat;
@@ -132,6 +132,14 @@ public sealed class ScanOptionsParser
         if (string.Equals(value, "text", StringComparison.OrdinalIgnoreCase))
         {
             format = OutputFormat.Text;
+            return true;
+        }
+
+        if (string.Equals(value, "github-annotations", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(value, "githubannotations", StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(value, "annotations", StringComparison.OrdinalIgnoreCase))
+        {
+            format = OutputFormat.GitHubAnnotations;
             return true;
         }
 

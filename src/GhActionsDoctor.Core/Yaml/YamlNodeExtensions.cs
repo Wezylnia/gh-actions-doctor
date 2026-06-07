@@ -111,6 +111,18 @@ internal static class YamlNodeExtensions
         }
     }
 
+    public static IEnumerable<(YamlMappingNode Node, string Run)> GetRunSteps(this YamlMappingNode root)
+    {
+        foreach (var step in root.GetSteps())
+        {
+            var runEntry = step.GetEntry("run");
+            if (runEntry?.Value is YamlScalarNode runNode && !string.IsNullOrWhiteSpace(runNode.Value))
+            {
+                yield return (step, runNode.Value);
+            }
+        }
+    }
+
     public static (int? Line, int? Column) GetLocation(this YamlNode? node)
     {
         if (node is null || node.Start.Line <= 0)

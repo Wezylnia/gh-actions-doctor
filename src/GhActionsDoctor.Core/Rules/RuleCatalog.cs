@@ -15,6 +15,9 @@ public static class RuleCatalog
         new DuplicateWorkflowNameRule(),
         new OverbroadIdTokenPermissionRule(),
         new PullRequestTargetUntrustedCheckoutRule(),
-        new UntrustedExpressionInRunRule()
+        new UntrustedExpressionInRunRule(),
+        new ReleaseWorkflowOverprivilegedTokenRule(),
+        new RemoteScriptExecutionRule(),
+        new SecretEchoRiskRule()
     ];
 }

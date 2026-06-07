@@ -7,32 +7,64 @@ public sealed record FixResult(int FixCount, IReadOnlyList<string> ChangedFiles,
 
 public sealed class WorkflowFixer
 {
-    public FixResult Fix(string path, bool apply)
+    public FixResult Fix(string path, bool apply, IReadOnlySet<string>? ruleFilter = null)
     {
         var files = WorkflowFileFinder.Find(path);
         var messages = new List<string>();
         var changedFiles = new List<string>();
         var fixCount = 0;
+        var skippedInvalid = new List<string>();
+        var skippedComplex = new List<string>();
+
+        var applyPermissions = ruleFilter is null || ruleFilter.Count == 0 || ruleFilter.Contains("missing-permissions");
+        var applyTimeout = ruleFilter is null || ruleFilter.Count == 0 || ruleFilter.Contains("missing-timeout");
 
         foreach (var file in files)
         {
-            var original = File.ReadAllText(file);
-            var updated = original;
-
-            var permissionsFix = AddMissingPermissions(updated);
-            if (permissionsFix.Changed)
+            // Parse-first: skip invalid YAML
+            if (!IsValidWorkflow(file))
             {
-                updated = permissionsFix.Content;
-                fixCount++;
-                messages.Add($"{file}: add top-level permissions: contents: read");
+                skippedInvalid.Add(file);
+                continue;
             }
 
-            var timeoutFix = AddMissingTimeouts(updated);
-            if (timeoutFix.Count > 0)
+            // Skip complex YAML with anchors/aliases
+            var content = File.ReadAllText(file);
+            if (content.Contains('&') && Regex.IsMatch(content, @"&\w+\s"))
             {
-                updated = timeoutFix.Content;
-                fixCount += timeoutFix.Count;
-                messages.Add($"{file}: add timeout-minutes: 30 to {timeoutFix.Count} job(s)");
+                skippedComplex.Add(file);
+                continue;
+            }
+
+            if (content.Contains('*') && content.Contains("<<:"))
+            {
+                skippedComplex.Add(file);
+                continue;
+            }
+
+            var original = content;
+            var updated = original;
+
+            if (applyPermissions)
+            {
+                var permissionsFix = AddMissingPermissions(updated);
+                if (permissionsFix.Changed)
+                {
+                    updated = permissionsFix.Content;
+                    fixCount++;
+                    messages.Add($"{file}: add top-level permissions: contents: read");
+                }
+            }
+
+            if (applyTimeout)
+            {
+                var timeoutFix = AddMissingTimeouts(updated);
+                if (timeoutFix.Count > 0)
+                {
+                    updated = timeoutFix.Content;
+                    fixCount += timeoutFix.Count;
+                    messages.Add($"{file}: add timeout-minutes: 30 to {timeoutFix.Count} job(s)");
+                }
             }
 
             if (!string.Equals(original, updated, StringComparison.Ordinal))
@@ -45,7 +77,31 @@ public sealed class WorkflowFixer
             }
         }
 
+        foreach (var invalid in skippedInvalid)
+        {
+            messages.Add($"Skipped invalid YAML: {invalid}");
+        }
+
+        foreach (var complex in skippedComplex)
+        {
+            messages.Add($"Skipped complex YAML: {complex}");
+        }
+
         return new FixResult(fixCount, changedFiles.Distinct(StringComparer.OrdinalIgnoreCase).ToArray(), messages);
+    }
+
+    private static bool IsValidWorkflow(string path)
+    {
+        try
+        {
+            var parser = new WorkflowParser();
+            var result = parser.Parse(path);
+            return result.IsValid;
+        }
+        catch
+        {
+            return false;
+        }
     }
 
     private static (bool Changed, string Content) AddMissingPermissions(string content)

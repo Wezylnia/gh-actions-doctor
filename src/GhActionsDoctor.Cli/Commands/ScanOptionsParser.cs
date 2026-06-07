@@ -27,6 +27,9 @@ public sealed class ScanOptionsParser
             var arg = args[index];
             switch (arg)
             {
+                case "-h":
+                case "--help":
+                    return ScanOptionsParseResult.Ok(ScanOptions.Default, helpRequested: true);
                 case "--path":
                     if (!TryReadValue(args, ref index, arg, out path, out var pathError))
                     {

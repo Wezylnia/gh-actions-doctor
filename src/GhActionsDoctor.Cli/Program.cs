@@ -29,6 +29,12 @@ internal static class ProgramMain
         }
 
         var parsedOptions = new ScanOptionsParser().Parse(args.Skip(1).ToArray());
+        if (parsedOptions.HelpRequested)
+        {
+            PrintHelp();
+            return 0;
+        }
+
         if (!parsedOptions.Success)
         {
             Console.Error.WriteLine(parsedOptions.Error);
@@ -105,6 +111,12 @@ internal static class ProgramMain
     private static int RunFix(string[] args)
     {
         var parsed = new FixOptionsParser().Parse(args);
+        if (parsed.HelpRequested)
+        {
+            PrintHelp();
+            return 0;
+        }
+
         if (!parsed.Success)
         {
             Console.Error.WriteLine(parsed.Error);
@@ -158,6 +170,7 @@ internal static class ProgramMain
           --path <path>                 Workflow directory or file. Defaults to ./.github/workflows.
           --dry-run                     Print safe fixes without changing files. Default.
           --apply                       Apply safe fixes.
+          --rule <rule-id,...>          Only apply selected fix rules (missing-timeout, missing-permissions).
         """);
     }
 }

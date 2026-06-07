@@ -20,6 +20,9 @@ public sealed class FixOptionsParser
         {
             switch (args[index])
             {
+                case "-h":
+                case "--help":
+                    return FixOptionsParseResult.Help();
                 case "--path":
                     if (!TryReadValue(args, ref index, out path, out var pathError))
                     {

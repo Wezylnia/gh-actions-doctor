@@ -151,10 +151,10 @@ public sealed class ScanOptionsParserTests
     [Fact]
     public void Rejects_invalid_format()
     {
-        var parsed = _parser.Parse(["--format", "sarif"]);
+        var parsed = _parser.Parse(["--format", "xml"]);
 
         Assert.False(parsed.Success);
-        Assert.Equal("Invalid --format value. Supported values: text, json, github-annotations.", parsed.Error);
+        Assert.Equal("Invalid --format value. Supported values: text, json, github-annotations, sarif.", parsed.Error);
     }
 
     [Fact]

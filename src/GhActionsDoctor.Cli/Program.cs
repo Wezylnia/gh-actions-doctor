@@ -36,6 +36,7 @@ internal static class ProgramMain
         {
             OutputFormat.Json => new JsonReporter().Render(result),
             OutputFormat.GitHubAnnotations => new GitHubAnnotationsReporter().Render(result),
+            OutputFormat.Sarif => new SarifReporter().Render(result),
             _ => new TextReporter().Render(result)
         };
 
@@ -53,7 +54,7 @@ internal static class ProgramMain
 
         Options:
           --path <path>                 Workflow directory or file. Defaults to ./.github/workflows.
-          --format <text|json|github-annotations>          Output format. Defaults to text.
+          --format <text|json|github-annotations|sarif>          Output format. Defaults to text.
           --fail-on <error|warning|info|none>
                                         Controls non-zero exit code. Defaults to error.
           --include <rule-id,...>       Run only selected rules.

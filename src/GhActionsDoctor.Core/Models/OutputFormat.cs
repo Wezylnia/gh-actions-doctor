@@ -4,5 +4,6 @@ public enum OutputFormat
 {
     Text,
     Json,
-    GitHubAnnotations
+    GitHubAnnotations,
+    Sarif
 }

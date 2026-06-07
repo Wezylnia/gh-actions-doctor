@@ -175,4 +175,38 @@ public sealed class ReporterTests
         Assert.Contains("file=file%3Aname.yml", output, StringComparison.Ordinal);
         Assert.Contains("%25 sign", output, StringComparison.Ordinal);
     }
+
+    [Fact]
+    public void SarifReporter_renders_valid_sarif_2_1_0()
+    {
+        var result = new ScanResult(
+            FilesScanned: 1,
+            Findings:
+            [
+                new Finding(
+                    RuleId: "missing-timeout",
+                    FilePath: ".github/workflows/ci.yml",
+                    Severity: RuleSeverity.Warning,
+                    Category: RuleCategory.Reliability,
+                    Message: "Missing timeout.",
+                    Suggestion: "Add timeout.",
+                    Line: 10,
+                    Column: 5)
+            ]);
+
+        var output = new SarifReporter().Render(result);
+        using var document = JsonDocument.Parse(output);
+        var root = document.RootElement;
+
+        Assert.Equal("2.1.0", root.GetProperty("version").GetString());
+        var schema = root.GetProperty("$schema").GetString();
+        Assert.Contains("sarif-2.1.0.json", schema);
+
+        var run = root.GetProperty("runs")[0];
+        Assert.Equal("gh-actions-doctor", run.GetProperty("tool").GetProperty("driver").GetProperty("name").GetString());
+
+        var result0 = run.GetProperty("results")[0];
+        Assert.Equal("missing-timeout", result0.GetProperty("ruleId").GetString());
+        Assert.Equal("warning", result0.GetProperty("level").GetString());
+    }
 }

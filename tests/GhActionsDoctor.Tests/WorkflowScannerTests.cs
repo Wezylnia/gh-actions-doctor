@@ -127,6 +127,76 @@ public sealed class WorkflowScannerTests : IDisposable
         Assert.Contains("\"ruleId\": \"missing-permissions\"", json);
     }
 
+    [Fact]
+    public void V1Contract_Json_has_top_level_summary_and_findings()
+    {
+        WriteWorkflow("build.yml", MinimalWorkflow("CI"));
+        var result = Scan("--include", "missing-permissions");
+        var json = new JsonReporter().Render(result);
+
+        Assert.Contains("\"summary\"", json);
+        Assert.Contains("\"findings\"", json);
+        Assert.Contains("\"filesScanned\"", json);
+        Assert.Contains("\"errors\"", json);
+        Assert.Contains("\"warnings\"", json);
+        Assert.Contains("\"info\"", json);
+    }
+
+    [Fact]
+    public void V1Contract_Json_finding_has_all_fields()
+    {
+        WriteWorkflow("build.yml", MinimalWorkflow("CI"));
+        var result = Scan("--include", "missing-permissions");
+        var json = new JsonReporter().Render(result);
+
+        Assert.Contains("\"file\"", json);
+        Assert.Contains("\"severity\"", json);
+        Assert.Contains("\"ruleId\"", json);
+        Assert.Contains("\"category\"", json);
+        Assert.Contains("\"message\"", json);
+        Assert.Contains("\"suggestion\"", json);
+    }
+
+    [Fact]
+    public void V1Contract_Baseline_prune_creates_backup()
+    {
+        var baselinePath = Path.Combine(_root, ".gh-actions-doctor-baseline.json");
+        File.WriteAllText(baselinePath, """{"version":1,"findings":[]}""");
+        WriteWorkflow("build.yml", MinimalWorkflow("CI"));
+
+        BaselineSuppressor.Prune([], baselinePath);
+
+        Assert.True(File.Exists(baselinePath + ".bak"));
+    }
+
+    [Fact]
+    public void V1Contract_Baseline_prune_keeps_matching_entry()
+    {
+        var baselinePath = Path.Combine(_root, ".gh-actions-doctor-baseline.json");
+        var finding = new Finding("missing-permissions", Path.Combine(_workflows, "build.yml").Replace('\\', '/'), RuleSeverity.Warning, RuleCategory.Security, "msg", "suggestion", 1);
+        File.WriteAllText(baselinePath, """{"version":1,"findings":[{"ruleId":"missing-permissions","filePath":"build.yml","message":"msg"}]}""");
+        WriteWorkflow("build.yml", MinimalWorkflow("CI"));
+
+        BaselineSuppressor.Prune([finding], baselinePath);
+
+        var content = File.ReadAllText(baselinePath);
+        Assert.Contains("missing-permissions", content);
+    }
+
+    [Fact]
+    public void V1Contract_SARIF_has_version_and_driver()
+    {
+        WriteWorkflow("build.yml", MinimalWorkflow("CI"));
+        var result = Scan("--include", "missing-permissions");
+
+        var sarif = new SarifReporter().Render(result);
+
+        Assert.Contains("\"version\": \"2.1.0\"", sarif);
+        Assert.Contains("\"gh-actions-doctor\"", sarif);
+        Assert.Contains("\"rules\"", sarif);
+        Assert.Contains("\"partialFingerprints\"", sarif);
+    }
+
     public void Dispose()
     {
         if (Directory.Exists(_root))

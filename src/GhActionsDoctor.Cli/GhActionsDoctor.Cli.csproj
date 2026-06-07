@@ -26,7 +26,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageReleaseNotes>v0.7.0 adds GitHub annotations, SARIF output, the composite action wrapper, safe workflow fixes, advanced security rules, baselines, and inline suppressions.</PackageReleaseNotes>
+    <PackageReleaseNotes>v0.9.0 adds hardened fix/baseline behavior, SARIF fingerprints, release-token, remote-script, and secret-echo risk rules, plus machine-readable schemas.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

@@ -8,7 +8,8 @@ public sealed record ScanOptions(
     IReadOnlySet<string> IncludeRules,
     IReadOnlySet<string> ExcludeRules,
     IReadOnlyDictionary<string, RuleSeverity> SeverityOverrides,
-    string? BaselinePath = null)
+    string? BaselinePath = null,
+    bool ShowSuppressions = false)
 {
     public static ScanOptions Default { get; } = new(
         Path: System.IO.Path.Combine(".", ".github", "workflows"),

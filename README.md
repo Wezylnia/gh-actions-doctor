@@ -146,6 +146,9 @@ Summary:
 | [`overbroad-id-token-permission`](docs/rules/overbroad-id-token-permission.md) | warning | security | Reports `id-token: write` permissions that do not appear to be used. |
 | [`pull-request-target-untrusted-checkout`](docs/rules/pull-request-target-untrusted-checkout.md) | error | security | Reports `pull_request_target` workflows that check out untrusted pull request head code. |
 | [`untrusted-expression-in-run`](docs/rules/untrusted-expression-in-run.md) | warning | security | Reports untrusted GitHub event data interpolated directly into shell commands. |
+| [`release-workflow-overprivileged-token`](docs/rules/release-workflow-overprivileged-token.md) | warning | security | Reports release workflows that grant overly broad token permissions. |
+| [`remote-script-execution`](docs/rules/remote-script-execution.md) | warning | security | Reports run steps that pipe remote scripts directly to a shell. |
+| [`secret-echo-risk`](docs/rules/secret-echo-risk.md) | warning | security | Reports steps that appear to echo or redirect secret values. |
 | [`yaml-parse-error`](docs/rules/yaml-parse-error.md) | error | correctness | Reports invalid workflow YAML without crashing the scan. |
 
 Want to add the next rule? The rule system is intentionally small: one rule class, focused tests, one docs page, and a README update. See [Adding a Rule](docs/contributing/adding-a-rule.md).
@@ -168,11 +171,14 @@ Scan options:
   --config <path|none>          Config file. Defaults to .gh-actions-doctor.yml if present.
   --baseline <path|none>        Baseline file for suppressing known findings.
   --write-baseline <path>       Write current findings to a baseline file.
+  --prune-baseline              Remove stale entries from the baseline file.
+  --show-suppressions           Include suppressed findings in output.
 
 Fix options:
   --path <path>                 Workflow directory or file. Defaults to ./.github/workflows.
   --dry-run                     Print safe fixes without changing files. Default.
   --apply                       Apply safe fixes.
+  --rule <rule-id,...>          Limit fixes to missing-timeout and/or missing-permissions.
 ```
 
 ## Configuration
@@ -296,7 +302,7 @@ Good contribution paths:
 
 ## Roadmap
 
-See [docs/roadmap.md](docs/roadmap.md) for the release roadmap, [docs/v0.7-implementation-roadmap.md](docs/v0.7-implementation-roadmap.md) for detailed implementation tasks through `v0.7.0`, [docs/project-status.md](docs/project-status.md) for current project status, and [docs/rules/README.md](docs/rules/README.md) for the rule catalog.
+See [docs/roadmap.md](docs/roadmap.md) for the release roadmap, [docs/project-status.md](docs/project-status.md) for current project status, and [docs/rules/README.md](docs/rules/README.md) for the rule catalog.
 
 Adopting the tool in an existing repository? See [docs/adoption-guide.md](docs/adoption-guide.md).
 

@@ -2,8 +2,6 @@
 
 This roadmap describes the public path from the current preview release to `v1.0.0`.
 
-For implementation-level task breakdowns, commit guidance, and release instructions through `v0.7.0`, see [Implementation Roadmap To v0.7](v0.7-implementation-roadmap.md).
-
 ## v0.1.0-preview.1 - shipped
 
 Focus: package and documentation readiness.

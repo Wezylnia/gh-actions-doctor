@@ -3,7 +3,11 @@ using GhActionsDoctor.Core.Parsing;
 
 namespace GhActionsDoctor.Core.Fixing;
 
-public sealed record FixResult(int FixCount, IReadOnlyList<string> ChangedFiles, IReadOnlyList<string> Messages);
+public sealed record FixResult(
+    int FixCount,
+    IReadOnlyList<string> ChangedFiles,
+    IReadOnlyList<string> Messages,
+    bool HasInvalidWorkflow);
 
 public sealed class WorkflowFixer
 {
@@ -87,7 +91,11 @@ public sealed class WorkflowFixer
             messages.Add($"Skipped complex YAML: {complex}");
         }
 
-        return new FixResult(fixCount, changedFiles.Distinct(StringComparer.OrdinalIgnoreCase).ToArray(), messages);
+        return new FixResult(
+            fixCount,
+            changedFiles.Distinct(StringComparer.OrdinalIgnoreCase).ToArray(),
+            messages,
+            skippedInvalid.Count > 0);
     }
 
     private static bool IsValidWorkflow(string path)

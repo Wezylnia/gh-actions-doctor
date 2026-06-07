@@ -36,12 +36,28 @@ public sealed class WorkflowScanner
             }
         }
 
-        findings = findings
-            .Where(finding =>
-                !inlineSuppressions.TryGetValue(finding.FilePath, out var suppressions) ||
-                !suppressions.IsSuppressed(finding))
-            .ToArray();
+        var activeFindings = new List<Finding>();
+        var suppressedFindings = new List<SuppressedFinding>();
+        foreach (var finding in findings)
+        {
+            if (inlineSuppressions.TryGetValue(finding.FilePath, out var suppressions) &&
+                suppressions.GetSuppressionSource(finding) is { } source)
+            {
+                suppressedFindings.Add(new SuppressedFinding(
+                    finding.RuleId,
+                    finding.FilePath,
+                    finding.Line,
+                    finding.Column,
+                    finding.Severity,
+                    finding.Category,
+                    finding.Message,
+                    source));
+                continue;
+            }
 
-        return new ScanResult(workflows.Length, findings);
+            activeFindings.Add(finding);
+        }
+
+        return new ScanResult(workflows.Length, activeFindings, suppressedFindings);
     }
 }

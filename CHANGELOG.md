@@ -4,6 +4,35 @@ All notable changes to this project will be documented in this file.
 
 The project follows preview releases until the first stable `1.0.0`.
 
+## 0.9.0 - 2026-06-07
+
+### Added
+
+- `release-workflow-overprivileged-token` security rule for overly broad token permissions in release-like workflows.
+- `remote-script-execution` security rule for remote scripts piped directly to shells.
+- `secret-echo-risk` security rule for steps that appear to echo or redirect secrets.
+- SARIF `partialFingerprints` for improved Code Scanning alert tracking.
+- Machine-readable JSON schemas for output, baseline, and configuration.
+
+### Changed
+
+- Package version updated to `0.9.0`.
+
+## 0.8.0 - 2026-06-07
+
+### Added
+
+- Dedicated parser for the `fix` command.
+- Rule-scoped safe fixes through `--rule missing-timeout,missing-permissions`.
+- Parse-aware fixer behavior that skips invalid or complex YAML.
+- Stable SHA-256 baseline fingerprints.
+- `--prune-baseline` for removing stale baseline entries.
+- `--show-suppressions` for optional visibility into baseline and inline suppressions.
+
+### Changed
+
+- Package version updated to `0.8.0`.
+
 ## 0.7.0 - 2026-06-07
 
 ### Added

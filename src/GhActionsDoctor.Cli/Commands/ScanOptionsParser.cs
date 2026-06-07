@@ -20,6 +20,7 @@ public sealed class ScanOptionsParser
         var baselineSet = false;
         string? writeBaselinePath = null;
         var pruneBaseline = false;
+        var showSuppressions = false;
 
         for (var index = 0; index < args.Length; index++)
         {
@@ -105,6 +106,9 @@ public sealed class ScanOptionsParser
                 case "--prune-baseline":
                     pruneBaseline = true;
                     break;
+                case "--show-suppressions":
+                    showSuppressions = true;
+                    break;
                 default:
                     return ScanOptionsParseResult.Fail($"Unknown option: {arg}");
             }
@@ -124,7 +128,8 @@ public sealed class ScanOptionsParser
             includeSet ? include : config.Config.IncludeRules,
             excludeSet ? exclude : config.Config.ExcludeRules,
             config.Config.SeverityOverrides,
-            baselineSet ? baselinePath : config.Config.BaselinePath);
+            baselineSet ? baselinePath : config.Config.BaselinePath,
+            showSuppressions);
 
         return ScanOptionsParseResult.Ok(options, baselineSet, writeBaselinePath, pruneBaseline);
     }

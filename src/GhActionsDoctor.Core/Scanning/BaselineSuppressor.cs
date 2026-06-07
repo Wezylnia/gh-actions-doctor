@@ -91,6 +91,35 @@ public sealed record BaselineEntry(
 
 public static class BaselineSuppressor
 {
+    public static ScanResult ApplyWithTracking(ScanResult result, string baselinePath)
+    {
+        var baseline = BaselineDocument.Load(baselinePath);
+        var entries = baseline.Findings ?? [];
+        var active = new List<Finding>();
+        var suppressed = new List<SuppressedFinding>(result.SuppressedFindings);
+
+        foreach (var finding in result.Findings)
+        {
+            if (entries.Any(entry => entry.Matches(finding)))
+            {
+                suppressed.Add(new SuppressedFinding(
+                    finding.RuleId,
+                    finding.FilePath,
+                    finding.Line,
+                    finding.Column,
+                    finding.Severity,
+                    finding.Category,
+                    finding.Message,
+                    "baseline"));
+                continue;
+            }
+
+            active.Add(finding);
+        }
+
+        return new ScanResult(result.FilesScanned, active, suppressed);
+    }
+
     public static IReadOnlyList<Finding> Apply(IReadOnlyList<Finding> findings, string baselinePath)
     {
         var baseline = BaselineDocument.Load(baselinePath);

@@ -38,6 +38,30 @@ internal static class ProgramMain
         var options = parsedOptions.Options!;
         var scanner = new WorkflowScanner();
         var result = scanner.Scan(options);
+        var resultBeforeBaseline = result;
+
+        // Prune baseline before applying baseline suppression.
+        if (parsedOptions.PruneBaseline)
+        {
+            if (string.IsNullOrWhiteSpace(options.BaselinePath) || options.BaselinePath.Equals("none", StringComparison.OrdinalIgnoreCase))
+            {
+                Console.Error.WriteLine("--prune-baseline requires a baseline file path via --baseline or config.");
+                return 2;
+            }
+
+            try
+            {
+                var resolvedBaselinePath = Path.GetFullPath(Path.IsPathRooted(options.BaselinePath)
+                    ? options.BaselinePath
+                    : Path.Combine(Directory.GetCurrentDirectory(), options.BaselinePath));
+                BaselineSuppressor.Prune(resultBeforeBaseline.Findings, resolvedBaselinePath);
+            }
+            catch (FileNotFoundException ex)
+            {
+                Console.Error.WriteLine($"Baseline file not found: {ex.Message}");
+                return 2;
+            }
+        }
 
         // Apply baseline suppression
         if (options.BaselinePath is not null && !options.BaselinePath.Equals("none", StringComparison.OrdinalIgnoreCase))
@@ -47,8 +71,7 @@ internal static class ProgramMain
                 var resolvedBaselinePath = Path.GetFullPath(Path.IsPathRooted(options.BaselinePath)
                     ? options.BaselinePath
                     : Path.Combine(Directory.GetCurrentDirectory(), options.BaselinePath));
-                var suppressedFindings = BaselineSuppressor.Apply(result.Findings, resolvedBaselinePath);
-                result = new ScanResult(result.FilesScanned, suppressedFindings);
+                result = BaselineSuppressor.ApplyWithTracking(result, resolvedBaselinePath);
             }
             catch (FileNotFoundException ex)
             {
@@ -67,35 +90,12 @@ internal static class ProgramMain
             baseline.Save(resolvedWritePath);
         }
 
-        // Prune baseline
-        if (parsedOptions.PruneBaseline)
-        {
-            if (string.IsNullOrWhiteSpace(options.BaselinePath) || options.BaselinePath.Equals("none", StringComparison.OrdinalIgnoreCase))
-            {
-                Console.Error.WriteLine("--prune-baseline requires a baseline file path via --baseline or config.");
-                return 2;
-            }
-
-            try
-            {
-                var resolvedBaselinePath = Path.GetFullPath(Path.IsPathRooted(options.BaselinePath)
-                    ? options.BaselinePath
-                    : Path.Combine(Directory.GetCurrentDirectory(), options.BaselinePath));
-                BaselineSuppressor.Prune(result.Findings, resolvedBaselinePath);
-            }
-            catch (FileNotFoundException ex)
-            {
-                Console.Error.WriteLine($"Baseline file not found: {ex.Message}");
-                return 2;
-            }
-        }
-
         var output = options.Format switch
         {
-            OutputFormat.Json => new JsonReporter().Render(result),
+            OutputFormat.Json => new JsonReporter().Render(result, options.ShowSuppressions),
             OutputFormat.GitHubAnnotations => new GitHubAnnotationsReporter().Render(result),
             OutputFormat.Sarif => new SarifReporter().Render(result),
-            _ => new TextReporter().Render(result)
+            _ => new TextReporter().Render(result, options.ShowSuppressions)
         };
 
         Console.WriteLine(output);
@@ -123,6 +123,11 @@ internal static class ProgramMain
             Console.WriteLine("No safe fixes found.");
         }
 
+        if (result.HasInvalidWorkflow)
+        {
+            return 3;
+        }
+
         return options.Apply || result.FixCount == 0 ? 0 : 1;
     }
 
@@ -147,6 +152,7 @@ internal static class ProgramMain
           --baseline <path|none>        Baseline file for suppressing known findings.
           --write-baseline <path>       Write current findings to a baseline file.
           --prune-baseline              Remove stale entries from the baseline file.
+          --show-suppressions           Include suppressed findings in output.
 
         Fix options:
           --path <path>                 Workflow directory or file. Defaults to ./.github/workflows.

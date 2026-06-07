@@ -67,17 +67,24 @@ public sealed record InlineSuppressions(
 {
     public bool IsSuppressed(Finding finding)
     {
+        return GetSuppressionSource(finding) is not null;
+    }
+
+    public string? GetSuppressionSource(Finding finding)
+    {
         if (DisableFile.Contains(finding.RuleId))
         {
-            return true;
+            return "inline-file";
         }
 
-        if (finding.Line is { } line && DisableNextLine.TryGetValue(line, out var ruleIds))
+        if (finding.Line is { } line &&
+            DisableNextLine.TryGetValue(line, out var ruleIds) &&
+            ruleIds.Contains(finding.RuleId))
         {
-            return ruleIds.Contains(finding.RuleId);
+            return "inline-next-line";
         }
 
-        return false;
+        return null;
     }
 
     public static InlineSuppressions Empty { get; } = new(

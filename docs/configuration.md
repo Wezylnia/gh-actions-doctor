@@ -35,4 +35,6 @@ baseline: .gh-actions-doctor-baseline.json
 | `severity` or `severityOverrides` | Mapping of rule IDs to `info`, `warning`, or `error`. |
 | `baseline` | Path to a baseline JSON file for suppressing known findings. |
 
+Suppressed findings can be shown at runtime with `--show-suppressions`. Baselines can be pruned with `--prune-baseline` when a baseline path is configured or passed with `--baseline`.
+
 CLI-provided values take precedence over matching config fields. Fields that are not provided on the CLI continue to come from config.

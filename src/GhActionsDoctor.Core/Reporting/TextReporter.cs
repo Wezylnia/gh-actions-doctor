@@ -5,7 +5,7 @@ namespace GhActionsDoctor.Core.Reporting;
 
 public sealed class TextReporter
 {
-    public string Render(ScanResult result)
+    public string Render(ScanResult result, bool showSuppressions = false)
     {
         var builder = new StringBuilder();
 
@@ -40,6 +40,17 @@ public sealed class TextReporter
         builder.AppendLine($"  {result.Errors} errors");
         builder.AppendLine($"  {result.Warnings} warnings");
         builder.AppendLine($"  {result.Info} info");
+
+        if (showSuppressions && result.SuppressedFindings.Count > 0)
+        {
+            builder.AppendLine();
+            builder.AppendLine("Suppressed findings:");
+            foreach (var suppressed in result.SuppressedFindings.OrderBy(finding => finding.FilePath, StringComparer.OrdinalIgnoreCase))
+            {
+                var location = suppressed.Line is not null ? $" line {suppressed.Line}" : string.Empty;
+                builder.AppendLine($"  [{suppressed.SuppressionSource}] {suppressed.FilePath}{location}: {suppressed.RuleId} {suppressed.Message}");
+            }
+        }
 
         return builder.ToString();
     }

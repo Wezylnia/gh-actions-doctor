@@ -31,7 +31,7 @@ GitHub Actions workflows are often copied from project to project and then left 
 
 ## Status
 
-Current release: `0.2.0`
+Current release: `0.7.0`
 
 This repository contains the polished MVP. It can scan workflow files, report findings in text or JSON, promote stricter security findings, and return CI-friendly exit codes.
 
@@ -49,12 +49,12 @@ This project currently targets `net10.0`.
 
 ## Install
 
-The current package version is `0.2.0`.
+The current package version is `0.7.0`.
 
 When published to NuGet:
 
 ```bash
-dotnet tool install --global gh-actions-doctor --version 0.2.0
+dotnet tool install --global gh-actions-doctor --version 0.7.0
 ```
 
 From a locally packed package:
@@ -161,6 +161,8 @@ Options:
   --exclude <rule-id,...>       Skip selected rules.
   --strict                      Promote selected security findings.
   --config <path|none>          Config file. Defaults to .gh-actions-doctor.yml if present.
+  --baseline <path|none>        Baseline file for suppressing known findings.
+  --write-baseline <path>       Write current findings to a baseline file.
 ```
 
 ## Configuration

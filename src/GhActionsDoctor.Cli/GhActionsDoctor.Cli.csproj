@@ -16,7 +16,7 @@
     <PackAsTool>true</PackAsTool>
     <ToolCommandName>gh-actions-doctor</ToolCommandName>
     <PackageId>gh-actions-doctor</PackageId>
-    <Version>0.2.0</Version>
+    <Version>0.7.0</Version>
     <Title>GitHub Actions Doctor</Title>
     <Authors>Wezylnia</Authors>
     <Description>A lightweight CLI that scans GitHub Actions workflows for security, reliability, performance, and cost issues.</Description>

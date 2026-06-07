@@ -4,6 +4,67 @@ All notable changes to this project will be documented in this file.
 
 The project follows preview releases until the first stable `1.0.0`.
 
+## 0.7.0 - 2026-06-07
+
+### Added
+
+- Baseline file support via `--baseline <path>` and `baseline` config field.
+- Baseline generation via `--write-baseline <path>`.
+- Inline suppression comments: `# gh-actions-doctor-disable-next-line` and `# gh-actions-doctor-disable-file`.
+- Adoption controls for gradual rollout in repositories with existing workflow findings.
+
+### Changed
+
+- Package version updated to `0.7.0`.
+
+## 0.6.0 - 2026-06-07
+
+### Added
+
+- `overbroad-id-token-permission` security rule for unused `id-token: write` permissions.
+- `pull-request-target-untrusted-checkout` security rule for unsafe checkout of pull request head code.
+- `untrusted-expression-in-run` security rule for untrusted event data interpolated directly into shell commands.
+
+### Changed
+
+- Package version updated to `0.6.0`.
+
+## 0.5.0 - 2026-06-07
+
+### Added
+
+- Conservative `fix` command.
+- Dry-run and apply modes for safe workflow edits.
+- Safe fixer for missing top-level `permissions: contents: read`.
+- Safe fixer for missing job `timeout-minutes: 30`.
+
+### Changed
+
+- Package version updated to `0.5.0`.
+
+## 0.4.0 - 2026-06-07
+
+### Added
+
+- SARIF 2.1.0 output through `--format sarif`.
+- SARIF rule metadata and source locations for GitHub Code Scanning.
+
+### Changed
+
+- Package version updated to `0.4.0`.
+
+## 0.3.0 - 2026-06-07
+
+### Added
+
+- GitHub workflow annotation output through `--format github-annotations`.
+- Official composite GitHub Action wrapper.
+- CI smoke checks for GitHub-native usage.
+
+### Changed
+
+- Package version updated to `0.3.0`.
+
 ## 0.2.0 - 2026-06-05
 
 ### Added
@@ -50,7 +111,7 @@ The project follows preview releases until the first stable `1.0.0`.
 - Sample good and bad workflows.
 - Public rule documentation for the first preview rules.
 
-### Known Gaps
+### Known Gaps At 0.1.0
 
 - SARIF output is not implemented yet.
 - Configuration file support is not implemented yet.

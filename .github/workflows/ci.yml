@@ -25,4 +25,9 @@ jobs:
       - run: dotnet restore
       - run: dotnet build GhActionsDoctor.sln --configuration Release --no-restore
       - run: dotnet test GhActionsDoctor.sln --configuration Release --no-build
+      - run: dotnet pack src/GhActionsDoctor.Cli --configuration Release --no-build
       - run: dotnet run --project src/GhActionsDoctor.Cli --configuration Release --no-build -- scan --fail-on warning
+      - run: dotnet run --project src/GhActionsDoctor.Cli --configuration Release --no-build -- scan --path samples/bad --format json --fail-on none
+      - run: dotnet run --project src/GhActionsDoctor.Cli --configuration Release --no-build -- scan --path samples/bad --format github-annotations --fail-on none
+      - run: dotnet run --project src/GhActionsDoctor.Cli --configuration Release --no-build -- scan --path samples/bad --format sarif --fail-on none
+      - run: dotnet run --project src/GhActionsDoctor.Cli --configuration Release --no-build -- fix --path samples/good --dry-run

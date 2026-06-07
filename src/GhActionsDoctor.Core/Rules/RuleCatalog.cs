@@ -12,6 +12,9 @@ public static class RuleCatalog
         new MissingConcurrencyRule(),
         new SetupNodeCacheMissingRule(),
         new BroadPushTriggerRule(),
-        new DuplicateWorkflowNameRule()
+        new DuplicateWorkflowNameRule(),
+        new OverbroadIdTokenPermissionRule(),
+        new PullRequestTargetUntrustedCheckoutRule(),
+        new UntrustedExpressionInRunRule()
     ];
 }

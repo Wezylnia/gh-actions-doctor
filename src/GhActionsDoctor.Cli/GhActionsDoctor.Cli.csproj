@@ -26,7 +26,7 @@
     <RepositoryType>git</RepositoryType>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageReleaseNotes>Configuration release with .gh-actions-doctor.yml support, --config, fail-on/strict/filter config fields, severity overrides, and config behavior tests.</PackageReleaseNotes>
+    <PackageReleaseNotes>v0.7.0 adds GitHub annotations, SARIF output, the composite action wrapper, safe workflow fixes, advanced security rules, baselines, and inline suppressions.</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>

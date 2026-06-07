@@ -13,6 +13,9 @@
 | [`setup-node-cache-missing`](setup-node-cache-missing.md) | performance | Detects `actions/setup-node` without dependency caching. |
 | [`broad-push-trigger`](broad-push-trigger.md) | cost | Detects broad push triggers without branch, tag, or path filters. |
 | [`duplicate-workflow-name`](duplicate-workflow-name.md) | maintainability | Detects repeated workflow names across files. |
+| [`overbroad-id-token-permission`](overbroad-id-token-permission.md) | security | Detects unused `id-token: write` permissions. |
+| [`pull-request-target-untrusted-checkout`](pull-request-target-untrusted-checkout.md) | security | Detects unsafe checkout of pull request head code in `pull_request_target`. |
+| [`untrusted-expression-in-run`](untrusted-expression-in-run.md) | security | Detects untrusted event data interpolated directly into shell commands. |
 | [`yaml-parse-error`](yaml-parse-error.md) | correctness | Reports invalid workflow YAML without crashing the scan. |
 
 New rules should include focused tests, rule docs, and README updates.

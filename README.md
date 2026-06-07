@@ -33,7 +33,7 @@ GitHub Actions workflows are often copied from project to project and then left 
 
 Current release: `0.7.0`
 
-This repository contains the polished MVP. It can scan workflow files, report findings in text or JSON, promote stricter security findings, and return CI-friendly exit codes.
+This repository contains a CI-ready preview release. It can scan workflow files, report findings in text, JSON, GitHub annotations, and SARIF, apply conservative safe fixes, suppress known findings with baselines, and return CI-friendly exit codes.
 
 Looking for a place to help? Start here:
 
@@ -61,7 +61,7 @@ From a locally packed package:
 
 ```bash
 dotnet pack src/GhActionsDoctor.Cli --configuration Release
-dotnet tool install --tool-path .tmp/tools gh-actions-doctor --version 0.2.0 --add-source src/GhActionsDoctor.Cli/bin/Release
+dotnet tool install --tool-path .tmp/tools gh-actions-doctor --version 0.7.0 --add-source src/GhActionsDoctor.Cli/bin/Release
 .tmp/tools/gh-actions-doctor scan
 ```
 
@@ -143,6 +143,9 @@ Summary:
 | [`setup-node-cache-missing`](docs/rules/setup-node-cache-missing.md) | info | performance | Reports `actions/setup-node` usage without dependency caching. |
 | [`broad-push-trigger`](docs/rules/broad-push-trigger.md) | info | cost | Reports workflows that run on every push without branch, tag, or path filters. |
 | [`duplicate-workflow-name`](docs/rules/duplicate-workflow-name.md) | info | maintainability | Reports repeated workflow names across files. |
+| [`overbroad-id-token-permission`](docs/rules/overbroad-id-token-permission.md) | warning | security | Reports `id-token: write` permissions that do not appear to be used. |
+| [`pull-request-target-untrusted-checkout`](docs/rules/pull-request-target-untrusted-checkout.md) | error | security | Reports `pull_request_target` workflows that check out untrusted pull request head code. |
+| [`untrusted-expression-in-run`](docs/rules/untrusted-expression-in-run.md) | warning | security | Reports untrusted GitHub event data interpolated directly into shell commands. |
 | [`yaml-parse-error`](docs/rules/yaml-parse-error.md) | error | correctness | Reports invalid workflow YAML without crashing the scan. |
 
 Want to add the next rule? The rule system is intentionally small: one rule class, focused tests, one docs page, and a README update. See [Adding a Rule](docs/contributing/adding-a-rule.md).
@@ -151,10 +154,12 @@ Want to add the next rule? The rule system is intentionally small: one rule clas
 
 ```txt
 gh-actions-doctor scan [options]
+gh-actions-doctor fix [options]
 
-Options:
+Scan options:
   --path <path>                 Workflow directory or file. Defaults to ./.github/workflows.
-  --format <text|json>          Output format. Defaults to text.
+  --format <text|json|github-annotations|sarif>
+                                Output format. Defaults to text.
   --fail-on <error|warning|info|none>
                                 Controls non-zero exit code. Defaults to error.
   --include <rule-id,...>       Run only selected rules.
@@ -163,6 +168,11 @@ Options:
   --config <path|none>          Config file. Defaults to .gh-actions-doctor.yml if present.
   --baseline <path|none>        Baseline file for suppressing known findings.
   --write-baseline <path>       Write current findings to a baseline file.
+
+Fix options:
+  --path <path>                 Workflow directory or file. Defaults to ./.github/workflows.
+  --dry-run                     Print safe fixes without changing files. Default.
+  --apply                       Apply safe fixes.
 ```
 
 ## Configuration
@@ -178,6 +188,7 @@ exclude:
   - action-not-sha-pinned
 severity:
   missing-permissions: error
+baseline: .gh-actions-doctor-baseline.json
 ```
 
 CLI-provided values take precedence over the matching config fields. See [Configuration](docs/configuration.md) for the full reference.
@@ -200,6 +211,34 @@ The JSON payload includes:
 - message,
 - suggestion,
 - source line and column when available.
+
+## SARIF And GitHub Annotations
+
+Use SARIF for GitHub Code Scanning:
+
+```bash
+dotnet run --project src/GhActionsDoctor.Cli -- scan --format sarif --fail-on none > gh-actions-doctor.sarif
+```
+
+Use GitHub annotations inside Actions jobs:
+
+```bash
+dotnet run --project src/GhActionsDoctor.Cli -- scan --format github-annotations --fail-on warning
+```
+
+## Safe Fixes
+
+Preview safe fixes without changing files:
+
+```bash
+dotnet run --project src/GhActionsDoctor.Cli -- fix --path .github/workflows --dry-run
+```
+
+Apply conservative fixes for missing top-level permissions and job timeouts:
+
+```bash
+dotnet run --project src/GhActionsDoctor.Cli -- fix --path .github/workflows --apply
+```
 
 ## GitHub Actions Usage
 
@@ -237,7 +276,7 @@ Pack as a local .NET tool:
 
 ```bash
 dotnet pack src/GhActionsDoctor.Cli --configuration Release
-dotnet tool install --tool-path .tmp/tools gh-actions-doctor --version 0.2.0 --add-source src/GhActionsDoctor.Cli/bin/Release
+dotnet tool install --tool-path .tmp/tools gh-actions-doctor --version 0.7.0 --add-source src/GhActionsDoctor.Cli/bin/Release
 .tmp/tools/gh-actions-doctor scan
 ```
 
@@ -249,7 +288,7 @@ Good contribution paths:
 
 - Add a focused workflow rule with tests and docs.
 - Improve source locations for findings.
-- Add reporter output such as SARIF or GitHub annotations.
+- Improve reporter output such as SARIF or GitHub annotations.
 - Add sample workflows for common project types.
 - Improve parser resilience for real-world workflow YAML.
 
@@ -257,7 +296,9 @@ Good contribution paths:
 
 ## Roadmap
 
-See [docs/roadmap.md](docs/roadmap.md) for the release roadmap, [docs/project-status.md](docs/project-status.md) for current project status, and [docs/rules/README.md](docs/rules/README.md) for the rule catalog.
+See [docs/roadmap.md](docs/roadmap.md) for the release roadmap, [docs/v0.7-implementation-roadmap.md](docs/v0.7-implementation-roadmap.md) for detailed implementation tasks through `v0.7.0`, [docs/project-status.md](docs/project-status.md) for current project status, and [docs/rules/README.md](docs/rules/README.md) for the rule catalog.
+
+Adopting the tool in an existing repository? See [docs/adoption-guide.md](docs/adoption-guide.md).
 
 ## Repository Governance
 

@@ -7,7 +7,7 @@ inputs:
     required: false
     default: .github/workflows
   format:
-    description: Output format (text, json, github-annotations).
+    description: Output format (text, json, github-annotations, sarif).
     required: false
     default: github-annotations
   fail-on:
@@ -22,6 +22,10 @@ inputs:
     description: .NET SDK version.
     required: false
     default: 10.0.x
+  output:
+    description: Optional file path where scanner output should be written.
+    required: false
+    default: ""
 
 runs:
   using: composite
@@ -30,15 +34,33 @@ runs:
       with:
         dotnet-version: ${{ inputs.dotnet-version }}
 
-    - name: Install gh-actions-doctor
-      shell: bash
-      run: dotnet tool install --global gh-actions-doctor --version 0.3.0
-
     - name: Run gh-actions-doctor
       shell: bash
       run: |
-        ARGS="scan --path \"${{ inputs.path }}\" --format \"${{ inputs.format }}\" --fail-on \"${{ inputs.fail-on }}\""
+        set -euo pipefail
+
+        args=(
+          scan
+          --path "${{ inputs.path }}"
+          --format "${{ inputs.format }}"
+          --fail-on "${{ inputs.fail-on }}"
+        )
+
         if [ -n "${{ inputs.config }}" ]; then
-          ARGS="$ARGS --config \"${{ inputs.config }}\""
+          args+=(--config "${{ inputs.config }}")
         fi
-        gh-actions-doctor $ARGS
+
+        output_file="${RUNNER_TEMP}/gh-actions-doctor-output.txt"
+        set +e
+        dotnet run --project "${GITHUB_ACTION_PATH}/src/GhActionsDoctor.Cli" -- "${args[@]}" > "${output_file}"
+        exit_code=$?
+        set -e
+
+        cat "${output_file}"
+
+        if [ -n "${{ inputs.output }}" ]; then
+          mkdir -p "$(dirname "${{ inputs.output }}")"
+          cp "${output_file}" "${{ inputs.output }}"
+        fi
+
+        exit "${exit_code}"

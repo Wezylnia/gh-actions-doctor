@@ -33,7 +33,9 @@ public sealed class ScanOptionsParserTests
                 "--fail-on", "warning",
                 "--include", "missing-permissions,missing-timeout",
                 "--exclude", "action-not-sha-pinned",
-                "--strict"
+                "--strict",
+                "--baseline", "baseline.json",
+                "--write-baseline", "new-baseline.json"
             ]);
 
         Assert.True(parsed.Success);
@@ -45,6 +47,8 @@ public sealed class ScanOptionsParserTests
         Assert.Contains("missing-permissions", parsed.Options.IncludeRules);
         Assert.Contains("missing-timeout", parsed.Options.IncludeRules);
         Assert.Contains("action-not-sha-pinned", parsed.Options.ExcludeRules);
+        Assert.Equal("baseline.json", parsed.Options.BaselinePath);
+        Assert.Equal("new-baseline.json", parsed.WriteBaselinePath);
     }
 
     [Fact]
@@ -72,6 +76,7 @@ public sealed class ScanOptionsParserTests
               - missing-permissions
             severity:
               action-not-sha-pinned: warning
+            baseline: baseline.json
             """);
 
         var parsed = _parser.Parse([]);
@@ -84,6 +89,7 @@ public sealed class ScanOptionsParserTests
         Assert.True(parsed.Options.Strict);
         Assert.Contains("missing-permissions", parsed.Options.IncludeRules);
         Assert.Equal(RuleSeverity.Warning, parsed.Options.SeverityOverrides["action-not-sha-pinned"]);
+        Assert.Equal("baseline.json", parsed.Options.BaselinePath);
     }
 
     [Fact]
@@ -140,6 +146,8 @@ public sealed class ScanOptionsParserTests
     [InlineData("--include")]
     [InlineData("--exclude")]
     [InlineData("--config")]
+    [InlineData("--baseline")]
+    [InlineData("--write-baseline")]
     public void Rejects_options_missing_a_value(string option)
     {
         var parsed = _parser.Parse([option]);

@@ -1,6 +1,8 @@
 # Roadmap
 
-This roadmap describes the public path from the current MVP to `v1.0.0`.
+This roadmap describes the public path from the current preview release to `v1.0.0`.
+
+For implementation-level task breakdowns, commit guidance, and release instructions through `v0.7.0`, see [Implementation Roadmap To v0.7](v0.7-implementation-roadmap.md).
 
 ## v0.1.0-preview.1 - shipped
 
@@ -32,18 +34,17 @@ Focus: configuration support.
 - Add `.gh-actions-doctor.yml`.
 - Allow rule disabling.
 - Allow severity overrides.
-- Allow file/rule ignores.
 - Add config parse validation.
 - Document config precedence with `--include`, `--exclude`, and `--strict`.
 
-## v0.3.0
+## v0.3.0 - shipped
 
 Focus: GitHub Actions integration.
 
 - Add GitHub annotation output.
 - Add an official GitHub Action wrapper.
 
-## v0.4.0
+## v0.4.0 - shipped
 
 Focus: SARIF output.
 
@@ -51,20 +52,36 @@ Focus: SARIF output.
 - Include rule metadata and source locations.
 - Document GitHub code scanning usage.
 
-## v0.5.0
+## v0.5.0 - shipped
 
 Focus: safe auto-fix.
 
 - Add a conservative `fix` command.
-- Support dry-run.
-- Preserve workflow YAML as much as practical.
+- Support dry-run and apply mode.
+- Add safe fixes for missing permissions and timeouts.
+
+## v0.6.0 - shipped
+
+Focus: advanced security rules.
+
+- Add overbroad OIDC permission detection.
+- Add unsafe `pull_request_target` checkout detection.
+- Add untrusted expression usage detection in shell commands.
+
+## v0.7.0 - shipped
+
+Focus: adoption controls.
+
+- Add baseline suppression support.
+- Add baseline generation.
+- Add inline suppression comments.
 
 ## v1.0.0
 
 Focus: stable public release.
 
 - Stable CLI.
-- Stable JSON schema.
+- Stable JSON and SARIF behavior.
 - Stable config schema.
 - Documented rules.
 - CI-ready output formats.

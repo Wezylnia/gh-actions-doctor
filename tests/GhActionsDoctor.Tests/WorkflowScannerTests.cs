@@ -93,6 +93,28 @@ public sealed class WorkflowScannerTests : IDisposable
     }
 
     [Fact]
+    public void Scan_applies_inline_next_line_suppression()
+    {
+        WriteWorkflow("build.yml", """
+        name: CI
+        on:
+          push:
+        permissions:
+          contents: read
+        jobs:
+          # gh-actions-doctor-disable-next-line missing-timeout
+          build:
+            runs-on: ubuntu-latest
+            steps:
+              - run: dotnet test
+        """);
+
+        var result = Scan("--include", "missing-timeout");
+
+        Assert.DoesNotContain(result.Findings, finding => finding.RuleId == "missing-timeout");
+    }
+
+    [Fact]
     public void Json_report_uses_expected_summary_shape()
     {
         WriteWorkflow("build.yml", MinimalWorkflow("CI"));

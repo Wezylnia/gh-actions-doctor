@@ -1,4 +1,5 @@
 using GhActionsDoctor.Cli.Commands;
+using GhActionsDoctor.Core.Fixing;
 using GhActionsDoctor.Core.Models;
 using GhActionsDoctor.Core.Reporting;
 using GhActionsDoctor.Core.Scanning;
@@ -13,6 +14,11 @@ internal static class ProgramMain
         {
             PrintHelp();
             return args.Length == 0 ? 1 : 0;
+        }
+
+        if (string.Equals(args[0], "fix", StringComparison.OrdinalIgnoreCase))
+        {
+            return RunFix(args.Skip(1).ToArray());
         }
 
         if (!string.Equals(args[0], "scan", StringComparison.OrdinalIgnoreCase))
@@ -73,6 +79,50 @@ internal static class ProgramMain
         return ExitCodeCalculator.Calculate(result, options.FailOn);
     }
 
+    private static int RunFix(string[] args)
+    {
+        var path = ScanOptions.Default.Path;
+        var apply = false;
+
+        for (var index = 0; index < args.Length; index++)
+        {
+            switch (args[index])
+            {
+                case "--path":
+                    if (index + 1 >= args.Length || args[index + 1].StartsWith("--", StringComparison.Ordinal))
+                    {
+                        Console.Error.WriteLine("Missing value for --path.");
+                        return 2;
+                    }
+
+                    path = args[++index];
+                    break;
+                case "--apply":
+                    apply = true;
+                    break;
+                case "--dry-run":
+                    apply = false;
+                    break;
+                default:
+                    Console.Error.WriteLine($"Unknown option: {args[index]}");
+                    return 2;
+            }
+        }
+
+        var result = new WorkflowFixer().Fix(path, apply);
+        foreach (var message in result.Messages)
+        {
+            Console.WriteLine(apply ? $"Applied: {message}" : $"Would apply: {message}");
+        }
+
+        if (result.FixCount == 0)
+        {
+            Console.WriteLine("No safe fixes found.");
+        }
+
+        return apply || result.FixCount == 0 ? 0 : 1;
+    }
+
     private static void PrintHelp()
     {
         Console.WriteLine("""
@@ -80,8 +130,9 @@ internal static class ProgramMain
 
         Usage:
           gh-actions-doctor scan [options]
+          gh-actions-doctor fix [options]
 
-        Options:
+        Scan options:
           --path <path>                 Workflow directory or file. Defaults to ./.github/workflows.
           --format <text|json|github-annotations|sarif>          Output format. Defaults to text.
           --fail-on <error|warning|info|none>
@@ -90,6 +141,13 @@ internal static class ProgramMain
           --exclude <rule-id,...>       Skip selected rules.
           --strict                      Promote selected security findings.
           --config <path|none>          Config file. Defaults to .gh-actions-doctor.yml if present.
+          --baseline <path|none>        Baseline file for suppressing known findings.
+          --write-baseline <path>       Write current findings to a baseline file.
+
+        Fix options:
+          --path <path>                 Workflow directory or file. Defaults to ./.github/workflows.
+          --dry-run                     Print safe fixes without changing files. Default.
+          --apply                       Apply safe fixes.
         """);
     }
 }

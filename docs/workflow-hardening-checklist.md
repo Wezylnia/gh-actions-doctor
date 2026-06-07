@@ -7,6 +7,7 @@ Use this checklist before merging a new or updated GitHub Actions workflow.
 - Add a top-level `permissions` block and grant only the scopes the workflow actually needs.
 - Keep the default token read-only unless a job must write releases, checks, pull requests, or packages.
 - See [`missing-permissions`](rules/missing-permissions.md) for the baseline permission rule.
+- See [`overbroad-id-token-permission`](rules/overbroad-id-token-permission.md) before granting `id-token: write`.
 
 ## Action References
 
@@ -24,11 +25,15 @@ Use this checklist before merging a new or updated GitHub Actions workflow.
 
 - Limit `push` triggers with branch, tag, or path filters when the workflow does not need to run on every change.
 - Treat `pull_request_target` as high risk and avoid it unless the workflow truly needs base-repository privileges.
+- Never check out untrusted pull request head code in `pull_request_target`.
 - See [`broad-push-trigger`](rules/broad-push-trigger.md) and [`risky-pull-request-target`](rules/risky-pull-request-target.md).
+- See [`pull-request-target-untrusted-checkout`](rules/pull-request-target-untrusted-checkout.md) for the stricter checkout rule.
 
 ## Dependencies And Secrets
 
 - Turn on dependency caching when installs run through `actions/setup-node`.
 - Keep secrets out of workflow examples, logs, fixtures, and committed sample files.
+- Do not interpolate pull request, issue, or comment body text directly into `run` commands.
 - Prefer synthetic values in tests and documentation so examples stay safe to copy.
 - See [`setup-node-cache-missing`](rules/setup-node-cache-missing.md) and the [Security Review Checklist](security-review-checklist.md).
+- See [`untrusted-expression-in-run`](rules/untrusted-expression-in-run.md) for shell-injection-prone event data patterns.

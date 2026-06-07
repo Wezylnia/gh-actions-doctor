@@ -81,38 +81,18 @@ internal static class ProgramMain
 
     private static int RunFix(string[] args)
     {
-        var path = ScanOptions.Default.Path;
-        var apply = false;
-
-        for (var index = 0; index < args.Length; index++)
+        var parsed = new FixOptionsParser().Parse(args);
+        if (!parsed.Success)
         {
-            switch (args[index])
-            {
-                case "--path":
-                    if (index + 1 >= args.Length || args[index + 1].StartsWith("--", StringComparison.Ordinal))
-                    {
-                        Console.Error.WriteLine("Missing value for --path.");
-                        return 2;
-                    }
-
-                    path = args[++index];
-                    break;
-                case "--apply":
-                    apply = true;
-                    break;
-                case "--dry-run":
-                    apply = false;
-                    break;
-                default:
-                    Console.Error.WriteLine($"Unknown option: {args[index]}");
-                    return 2;
-            }
+            Console.Error.WriteLine(parsed.Error);
+            return 2;
         }
 
-        var result = new WorkflowFixer().Fix(path, apply);
+        var options = parsed.Options!;
+        var result = new WorkflowFixer().Fix(options.Path, options.Apply, options.Rules);
         foreach (var message in result.Messages)
         {
-            Console.WriteLine(apply ? $"Applied: {message}" : $"Would apply: {message}");
+            Console.WriteLine(options.Apply ? $"Applied: {message}" : $"Would apply: {message}");
         }
 
         if (result.FixCount == 0)
@@ -120,7 +100,7 @@ internal static class ProgramMain
             Console.WriteLine("No safe fixes found.");
         }
 
-        return apply || result.FixCount == 0 ? 0 : 1;
+        return options.Apply || result.FixCount == 0 ? 0 : 1;
     }
 
     private static void PrintHelp()

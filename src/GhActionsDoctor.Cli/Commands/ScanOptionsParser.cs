@@ -19,6 +19,7 @@ public sealed class ScanOptionsParser
         string? baselinePath = null;
         var baselineSet = false;
         string? writeBaselinePath = null;
+        var pruneBaseline = false;
 
         for (var index = 0; index < args.Length; index++)
         {
@@ -101,6 +102,9 @@ public sealed class ScanOptionsParser
                     }
 
                     break;
+                case "--prune-baseline":
+                    pruneBaseline = true;
+                    break;
                 default:
                     return ScanOptionsParseResult.Fail($"Unknown option: {arg}");
             }
@@ -122,7 +126,7 @@ public sealed class ScanOptionsParser
             config.Config.SeverityOverrides,
             baselineSet ? baselinePath : config.Config.BaselinePath);
 
-        return ScanOptionsParseResult.Ok(options, baselineSet, writeBaselinePath);
+        return ScanOptionsParseResult.Ok(options, baselineSet, writeBaselinePath, pruneBaseline);
     }
 
     private static bool TryReadValue(string[] args, ref int index, string option, out string value, out string error)

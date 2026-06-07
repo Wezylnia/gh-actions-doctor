@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Wezylnia/gh-actions-doctor/schemas/json-output.schema.json",
+  "title": "gh-actions-doctor JSON Output",
+  "type": "object",
+  "properties": {
+    "summary": {
+      "type": "object",
+      "properties": {
+        "filesScanned": { "type": "integer" },
+        "errors": { "type": "integer" },
+        "warnings": { "type": "integer" },
+        "info": { "type": "integer" }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "file": { "type": "string" },
+          "severity": { "type": "string", "enum": ["error", "warning", "info"] },
+          "ruleId": { "type": "string" },
+          "category": { "type": "string" },
+          "message": { "type": "string" },
+          "suggestion": { "type": "string" },
+          "line": { "type": "integer" },
+          "column": { "type": "integer" }
+        }
+      }
+    }
+  }
+}

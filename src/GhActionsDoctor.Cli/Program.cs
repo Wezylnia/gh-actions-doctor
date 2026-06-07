@@ -67,6 +67,29 @@ internal static class ProgramMain
             baseline.Save(resolvedWritePath);
         }
 
+        // Prune baseline
+        if (parsedOptions.PruneBaseline)
+        {
+            if (string.IsNullOrWhiteSpace(options.BaselinePath) || options.BaselinePath.Equals("none", StringComparison.OrdinalIgnoreCase))
+            {
+                Console.Error.WriteLine("--prune-baseline requires a baseline file path via --baseline or config.");
+                return 2;
+            }
+
+            try
+            {
+                var resolvedBaselinePath = Path.GetFullPath(Path.IsPathRooted(options.BaselinePath)
+                    ? options.BaselinePath
+                    : Path.Combine(Directory.GetCurrentDirectory(), options.BaselinePath));
+                BaselineSuppressor.Prune(result.Findings, resolvedBaselinePath);
+            }
+            catch (FileNotFoundException ex)
+            {
+                Console.Error.WriteLine($"Baseline file not found: {ex.Message}");
+                return 2;
+            }
+        }
+
         var output = options.Format switch
         {
             OutputFormat.Json => new JsonReporter().Render(result),
@@ -123,6 +146,7 @@ internal static class ProgramMain
           --config <path|none>          Config file. Defaults to .gh-actions-doctor.yml if present.
           --baseline <path|none>        Baseline file for suppressing known findings.
           --write-baseline <path>       Write current findings to a baseline file.
+          --prune-baseline              Remove stale entries from the baseline file.
 
         Fix options:
           --path <path>                 Workflow directory or file. Defaults to ./.github/workflows.

@@ -10,7 +10,6 @@ public sealed class ReleaseWorkflowOverprivilegedTokenRule : IWorkflowRule
     public RuleCategory Category => RuleCategory.Security;
     public RuleSeverity DefaultSeverity => RuleSeverity.Warning;
 
-    private static readonly string[] ReleaseTriggers = ["release", "workflow_dispatch"];
     private static readonly string[] LegitimateReleaseActions =
     [
         "softprops/action-gh-release",

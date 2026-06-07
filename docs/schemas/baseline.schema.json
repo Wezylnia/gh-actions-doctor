@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Wezylnia/gh-actions-doctor/schemas/baseline.schema.json",
+  "title": "gh-actions-doctor Baseline",
+  "type": "object",
+  "properties": {
+    "version": { "type": "integer" },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "ruleId": { "type": "string" },
+          "filePath": { "type": "string" },
+          "message": { "type": "string" },
+          "fingerprint": { "type": "string" }
+        },
+        "required": ["ruleId", "filePath", "message"]
+      }
+    }
+  },
+  "required": ["version", "findings"]
+}

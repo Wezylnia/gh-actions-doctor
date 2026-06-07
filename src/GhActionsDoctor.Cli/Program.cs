@@ -32,6 +32,35 @@ internal static class ProgramMain
         var options = parsedOptions.Options!;
         var scanner = new WorkflowScanner();
         var result = scanner.Scan(options);
+
+        // Apply baseline suppression
+        if (options.BaselinePath is not null && !options.BaselinePath.Equals("none", StringComparison.OrdinalIgnoreCase))
+        {
+            try
+            {
+                var resolvedBaselinePath = Path.GetFullPath(Path.IsPathRooted(options.BaselinePath)
+                    ? options.BaselinePath
+                    : Path.Combine(Directory.GetCurrentDirectory(), options.BaselinePath));
+                var suppressedFindings = BaselineSuppressor.Apply(result.Findings, resolvedBaselinePath);
+                result = new ScanResult(result.FilesScanned, suppressedFindings);
+            }
+            catch (FileNotFoundException ex)
+            {
+                Console.Error.WriteLine($"Baseline file not found: {ex.Message}");
+                return 2;
+            }
+        }
+
+        // Write baseline
+        if (parsedOptions.WriteBaselinePath is not null)
+        {
+            var resolvedWritePath = Path.GetFullPath(Path.IsPathRooted(parsedOptions.WriteBaselinePath)
+                ? parsedOptions.WriteBaselinePath
+                : Path.Combine(Directory.GetCurrentDirectory(), parsedOptions.WriteBaselinePath));
+            var baseline = BaselineDocument.FromFindings(result.Findings);
+            baseline.Save(resolvedWritePath);
+        }
+
         var output = options.Format switch
         {
             OutputFormat.Json => new JsonReporter().Render(result),

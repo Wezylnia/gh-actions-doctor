@@ -16,6 +16,9 @@ public sealed class ScanOptionsParser
         var exclude = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         var excludeSet = false;
         string? configPath = null;
+        string? baselinePath = null;
+        var baselineSet = false;
+        string? writeBaselinePath = null;
 
         for (var index = 0; index < args.Length; index++)
         {
@@ -83,6 +86,21 @@ public sealed class ScanOptionsParser
                     }
 
                     break;
+                case "--baseline":
+                    if (!TryReadValue(args, ref index, arg, out baselinePath, out var baselineError))
+                    {
+                        return ScanOptionsParseResult.Fail(baselineError);
+                    }
+
+                    baselineSet = true;
+                    break;
+                case "--write-baseline":
+                    if (!TryReadValue(args, ref index, arg, out writeBaselinePath, out var writeError))
+                    {
+                        return ScanOptionsParseResult.Fail(writeError);
+                    }
+
+                    break;
                 default:
                     return ScanOptionsParseResult.Fail($"Unknown option: {arg}");
             }
@@ -101,9 +119,10 @@ public sealed class ScanOptionsParser
             strict ?? config.Config.Strict ?? false,
             includeSet ? include : config.Config.IncludeRules,
             excludeSet ? exclude : config.Config.ExcludeRules,
-            config.Config.SeverityOverrides);
+            config.Config.SeverityOverrides,
+            baselineSet ? baselinePath : config.Config.BaselinePath);
 
-        return ScanOptionsParseResult.Ok(options);
+        return ScanOptionsParseResult.Ok(options, baselineSet, writeBaselinePath);
     }
 
     private static bool TryReadValue(string[] args, ref int index, string option, out string value, out string error)

@@ -13,7 +13,8 @@ internal sealed record ScanConfig(
     bool? Strict,
     IReadOnlySet<string> IncludeRules,
     IReadOnlySet<string> ExcludeRules,
-    IReadOnlyDictionary<string, RuleSeverity> SeverityOverrides)
+    IReadOnlyDictionary<string, RuleSeverity> SeverityOverrides,
+    string? BaselinePath)
 {
     public static ScanConfig Empty { get; } = new(
         null,
@@ -23,7 +24,8 @@ internal sealed record ScanConfig(
         null,
         new HashSet<string>(StringComparer.OrdinalIgnoreCase),
         new HashSet<string>(StringComparer.OrdinalIgnoreCase),
-        new Dictionary<string, RuleSeverity>(StringComparer.OrdinalIgnoreCase));
+        new Dictionary<string, RuleSeverity>(StringComparer.OrdinalIgnoreCase),
+        null);
 }
 
 internal static class ScanConfigLoader
@@ -93,6 +95,7 @@ internal static class ScanConfigLoader
         var include = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         var exclude = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         var severity = new Dictionary<string, RuleSeverity>(StringComparer.OrdinalIgnoreCase);
+        string? baselinePath = null;
 
         foreach (var entry in root.Children)
         {
@@ -125,10 +128,13 @@ internal static class ScanConfigLoader
                 case "severityOverrides":
                     AddSeverityOverrides(severity, entry.Value);
                     break;
+                case "baseline":
+                    baselinePath = Scalar(entry.Value);
+                    break;
             }
         }
 
-        return new ScanConfig(path, format, failOn, failOnSet, strict, include, exclude, severity);
+        return new ScanConfig(path, format, failOn, failOnSet, strict, include, exclude, severity, baselinePath);
     }
 
     private static string Scalar(YamlNode node) =>
